@@ -1,4 +1,4 @@
-# WhatsApp-like Messaging App
+# Date Messaging App
 
 This workspace contains a full-stack messaging platform scaffold for web + mobile.
 
