@@ -1411,6 +1411,20 @@
         let statusesCache = [];
         let callHistory = [];
 
+        // Per-conversation cache so messages that arrive while a chat isn't
+        // open aren't thrown away. Keyed by peer socket.id (1:1) or group id.
+        const conversations = new Map();
+        function getConvo(key) {
+            let convo = conversations.get(key);
+            if (!convo) { convo = { messages: [], unread: 0 }; conversations.set(key, convo); }
+            return convo;
+        }
+
+        // socket.id is the authoritative identity. The server stamps messages
+        // with socket.id as the sender, and the userList it broadcasts uses
+        // socket.id for each peer — so this is what every comparison hinges on.
+        socket.on('connect', () => { myId = socket.id; });
+
         const myNameEl = document.getElementById('myName');
         const myAvatarEl = document.getElementById('myAvatar');
         const usersListEl = document.getElementById('usersList');
@@ -1466,7 +1480,8 @@
         let selectedPlan = localStorage.getItem('subscriptionPlan') || 'free';
 
         function init() {
-            myId = 'user_' + Math.random().toString(36).substr(2, 9);
+            // myId is now derived from socket.id by the 'connect' handler above,
+            // so the value the client uses matches what the server stamps on messages.
             myName = localStorage.getItem('userName') || 'User' + Math.floor(Math.random() * 1000);
             
             const hasSetupCompleted = localStorage.getItem('setupCompleted');
@@ -1636,20 +1651,30 @@
             renderStatuses();
         });
 
+        // Outgoing message echo from the server — cache it under the recipient/group
+        // so it shows on switch-back, and display it now if the chat is open.
         socket.on('messageSent', (message) => {
-            if (selectedChat && selectedChat.id === message.to && selectedChat.type === 'user') {
+            const key = message.to; // server sets to = groupId || recipient socket.id
+            getConvo(key).messages.push(message);
+            if (selectedChat && selectedChat.id === key) {
                 displayMessage(message, true);
             }
         });
 
+        // Incoming message — cache it; only render now if the user is on that
+        // conversation. Otherwise bump unread count so the sidebar shows a badge.
         socket.on('newMessage', (message) => {
-            if (!selectedChat) return;
-            if (selectedChat.type === 'user' && message.from === selectedChat.id) {
-                displayMessage(message);
+            const isGroup = groupsCache.some(g => g.id === message.to);
+            const key = isGroup ? message.to : message.from;
+            const convo = getConvo(key);
+            convo.messages.push(message);
+            const viewing = selectedChat && selectedChat.id === key;
+            if (viewing) {
+                displayMessage(message, false);
                 socket.emit('markAsRead', { messageId: message.id, readBy: myId });
-            }
-            if (selectedChat.type === 'group' && message.to === selectedChat.id) {
-                displayMessage(message);
+            } else {
+                convo.unread++;
+                renderSidebar();
             }
         });
 
@@ -1743,10 +1768,14 @@
                 const userEl = document.createElement('div');
                 userEl.className = `user-item ${selectedChat?.id === user.id ? 'active' : ''}`;
                 userEl.dataset.id = user.id;
+                const unread = conversations.get(user.id)?.unread || 0;
+                const badge = unread > 0
+                    ? `<span style="background:#0078d4;color:#fff;padding:1px 7px;border-radius:10px;font-size:11px;margin-left:6px;">${unread}</span>`
+                    : '';
                 userEl.innerHTML = `
                     <img src="${user.avatar}" alt="${user.name}">
                     <div class="user-details">
-                        <h4>${user.name}</h4>
+                        <h4>${user.name}${badge}</h4>
                         <div class="status ${user.status}">${user.status}</div>
                     </div>
                     <div class="online-dot ${user.status}"></div>
@@ -1848,24 +1877,30 @@
             audioCallBtnEl.style.display = chat.type === 'user' ? 'inline-flex' : 'none';
             videoCallBtnEl.style.display = chat.type === 'user' ? 'inline-flex' : 'none';
             inputAreaEl.classList.remove('hidden');
-            messagesAreaEl.innerHTML = '<div class="empty-state">Loading conversation...</div>';
+
+            // Render anything we've already received for this chat, then clear unread.
+            const convo = getConvo(chat.id);
+            messagesAreaEl.innerHTML = '';
+            if (convo.messages.length === 0) {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'empty-state';
+                placeholder.textContent = 'No messages yet. Start typing.';
+                messagesAreaEl.appendChild(placeholder);
+            } else {
+                convo.messages.forEach(m => displayMessage(m, m.from === myId));
+                convo.messages
+                    .filter(m => m.from !== myId && !m.read)
+                    .forEach(m => { m.read = true; socket.emit('markAsRead', { messageId: m.id, readBy: myId }); });
+            }
+            convo.unread = 0;
             renderUserSelection();
-            loadMessagesForChat();
+            renderSidebar();
         }
 
         function renderUserSelection() {
             document.querySelectorAll('.user-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.id === selectedChat?.id);
             });
-        }
-
-        function loadMessagesForChat() {
-            messagesAreaEl.innerHTML = '';
-            // In a simplified demo, messages are loaded as they arrive.
-            const placeholder = document.createElement('div');
-            placeholder.className = 'empty-state';
-            placeholder.textContent = 'Chat ready. Start typing.';
-            messagesAreaEl.appendChild(placeholder);
         }
 
         function sendMessage() {
