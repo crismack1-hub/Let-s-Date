@@ -1423,7 +1423,13 @@
         // socket.id is the authoritative identity. The server stamps messages
         // with socket.id as the sender, and the userList it broadcasts uses
         // socket.id for each peer — so this is what every comparison hinges on.
-        socket.on('connect', () => { myId = socket.id; });
+        // Re-emit login on every (re)connect: socket.io will auto-reconnect
+        // with a fresh socket.id after any blip, but the server forgets us on
+        // disconnect, so we have to re-announce ourselves to reappear online.
+        socket.on('connect', () => {
+            myId = socket.id;
+            if (myName) socket.emit('login', { name: myName });
+        });
 
         const myNameEl = document.getElementById('myName');
         const myAvatarEl = document.getElementById('myAvatar');
