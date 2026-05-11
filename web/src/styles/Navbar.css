@@ -1,0 +1,158 @@
+/* Navbar */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(180%) blur(14px);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  border-bottom: 1px solid #ececf2;
+  gap: 24px;
+}
+
+.navbar-brand {
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #14142b;
+}
+
+.logo-link {
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  margin-left: -8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.logo-link:hover {
+  background: #f0f1f4;
+}
+
+.navbar-menu {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 7px 12px;
+  border-radius: 999px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-link:hover {
+  color: #14142b;
+  background-color: #f0f1f4;
+}
+
+.nav-link.active {
+  color: #14142b;
+  background-color: #f0f1f4;
+  font-weight: 600;
+}
+
+.nav-link .badge {
+  margin-left: 4px;
+  font-size: 0.65rem;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.plan-pill {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+}
+
+.plan-pill-upgrade {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8a8a 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.25);
+}
+
+.plan-pill-upgrade:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(255, 107, 107, 0.35);
+}
+
+.plan-pill-premium {
+  background: #14142b;
+  color: #fff;
+}
+
+.plan-pill-premium:hover {
+  background: #1f1f3a;
+}
+
+.plan-pill.active {
+  outline: 2px solid #ff6b6b;
+  outline-offset: 2px;
+}
+
+.logout-btn {
+  padding: 7px 14px;
+  background: transparent;
+  color: #6b7280;
+  border: 1px solid #e6e8ec;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.logout-btn:hover {
+  background: #f0f1f4;
+  color: #14142b;
+  border-color: #d1d5db;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .navbar-menu {
+    gap: 12px;
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .nav-link {
+    font-size: 0.8rem;
+  }
+
+  .logout-btn {
+    width: 100%;
+  }
+}

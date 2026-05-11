@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -d c:/Users/crism/OneDrive/Documents/Dating-app-working/node_modules c:/Users/crism/OneDrive/Documents/Dating-app-working/backend/node_modules c:/Users/crism/OneDrive/Documents/Dating-app-working/web/node_modules c:/Users/crism/OneDrive/Documents/Dating-app-working/mobile/node_modules 2>&1; echo ---; ls c:/dev 2>&1)",
+      "Read(//c//**)",
+      "Bash(powershell.exe -NoProfile -Command \"Write-Host 'alive'\")",
+      "Bash(echo \"exit=$?\")",
+      "Bash(powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\crism\\\\AppData\\\\Local\\\\Temp\\\\move-node-modules.ps1\")",
+      "Bash(powershell.exe -NoProfile -Command '@\\('\\\\''C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\node_modules'\\\\'','\\\\''C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\backend\\\\node_modules'\\\\'','\\\\''C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\web\\\\node_modules'\\\\'','\\\\''C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\mobile\\\\node_modules'\\\\''\\) | ForEach-Object { $i = Get-Item -LiteralPath $_ -Force; '\\\\''{0} -> {1}'\\\\'' -f $_, \\($i.Target -join '\\\\'','\\\\''\\) }')",
+      "Bash(echo \"=== c:\\\\\\\\dev\\\\\\\\dating-app-modules ===\")",
+      "Bash(cmd //c \"dir C:\\\\dev\\\\dating-app-modules\")",
+      "Bash(cmd //c \"fsutil reparsepoint query C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\node_modules\")",
+      "Bash(cmd //c \"dir C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\web\\\\node_modules\")",
+      "Bash(cmd //c \"dir C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\node_modules\")",
+      "Bash(cmd //c 'rmdir \"C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\node_modules\"')",
+      "Bash(cmd //c 'rmdir \"C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\backend\\\\node_modules\"')",
+      "Bash(cmd //c 'rmdir \"C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\web\\\\node_modules\"')",
+      "Bash(cmd //c 'rmdir \"C:\\\\Users\\\\crism\\\\OneDrive\\\\Documents\\\\Dating-app-working\\\\mobile\\\\node_modules\"')",
+      "Bash(cmd //c \"mkdir C:\\\\dev\\\\dating-app-junctions\\\\root\")",
+      "Bash(curl -s http://localhost:4000/api/discover -H \"Authorization: Bearer dummy\")"
+    ]
+  }
+}
