@@ -92,14 +92,16 @@ io.on('connection', (socket) => {
     console.log('Users online:', Object.keys(users).length);
   });
 
-  // Send message (1:1 or group)
+  // Send message (1:1 or group). Trust socket.id for the sender identity
+  // rather than a client-supplied `from` — clients don't know their own
+  // socket.id ahead of time, and trusting the client invites impersonation.
   socket.on('sendMessage', (data) => {
-    const { to, message, from, fromName, groupId, type = 'text', mediaUrl } = data;
-    if (to && message && from) {
+    const { to, message, fromName, groupId, type = 'text', mediaUrl } = data;
+    if ((to || groupId) && message) {
       const messageObj = {
         id: uuidv4(),
-        from,
-        fromName,
+        from: socket.id,
+        fromName: fromName || users[socket.id]?.name,
         to: groupId || to,
         message,
         type,
@@ -354,23 +356,23 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Disconnect
+  // Disconnect — drop the user entry entirely. socket.id is fresh on every
+  // reconnect, so keeping stale entries around (as the previous version did)
+  // accumulated a duplicate sidebar row every time a client refreshed.
   socket.on('disconnect', () => {
     const user = users[socket.id];
-    if (user) {
-      user.status = 'offline';
-      user.lastSeen = new Date().toISOString();
-      const userList = Object.values(users).map(u => ({
-        id: u.id,
-        name: u.name,
-        status: u.status,
-        avatar: u.avatar,
-        lastSeen: u.lastSeen
-      }));
-      io.emit('userList', userList);
-      io.emit('userOffline', { userId: socket.id, userName: user.name });
-      console.log('User disconnected:', socket.id);
-    }
+    if (!user) return;
+    delete users[socket.id];
+    const userList = Object.values(users).map(u => ({
+      id: u.id,
+      name: u.name,
+      status: u.status,
+      avatar: u.avatar,
+      lastSeen: u.lastSeen
+    }));
+    io.emit('userList', userList);
+    io.emit('userOffline', { userId: socket.id, userName: user.name });
+    console.log('User disconnected:', socket.id);
   });
 });
 
