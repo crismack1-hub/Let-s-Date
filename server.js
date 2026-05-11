@@ -356,23 +356,23 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Disconnect
+  // Disconnect — drop the user entry entirely. socket.id is fresh on every
+  // reconnect, so keeping stale entries around (as the previous version did)
+  // accumulated a duplicate sidebar row every time a client refreshed.
   socket.on('disconnect', () => {
     const user = users[socket.id];
-    if (user) {
-      user.status = 'offline';
-      user.lastSeen = new Date().toISOString();
-      const userList = Object.values(users).map(u => ({
-        id: u.id,
-        name: u.name,
-        status: u.status,
-        avatar: u.avatar,
-        lastSeen: u.lastSeen
-      }));
-      io.emit('userList', userList);
-      io.emit('userOffline', { userId: socket.id, userName: user.name });
-      console.log('User disconnected:', socket.id);
-    }
+    if (!user) return;
+    delete users[socket.id];
+    const userList = Object.values(users).map(u => ({
+      id: u.id,
+      name: u.name,
+      status: u.status,
+      avatar: u.avatar,
+      lastSeen: u.lastSeen
+    }));
+    io.emit('userList', userList);
+    io.emit('userOffline', { userId: socket.id, userName: user.name });
+    console.log('User disconnected:', socket.id);
   });
 });
 
