@@ -236,6 +236,10 @@ export default function App() {
     }
   };
 
+  const openChatOnWeb = (chatId: string) => {
+    Linking.openURL(`${WEB_URL}/?chat=${encodeURIComponent(chatId)}`);
+  };
+
   const handleSend = () => {
     if (!socket || !currentMessage.trim() || !selectedChat) return;
     const body = currentMessage.trim();
@@ -581,7 +585,7 @@ export default function App() {
               styles.rowCross,
               selectedChat === CROSS_PLATFORM && styles.rowActive,
             ]}
-            onPress={() => openChat(CROSS_PLATFORM)}
+            onPress={() => openChatOnWeb(CROSS_PLATFORM)}
           >
             <View style={styles.rowAvatarBox}>
               <Text style={styles.rowAvatarEmoji}>📱</Text>
@@ -609,7 +613,7 @@ export default function App() {
               <Pressable
                 key={c.id}
                 style={styles.row}
-                onPress={() => openChat(c.userId)}
+                onPress={() => openChatOnWeb(c.userId)}
               >
                 <View style={styles.rowAvatarBox}>
                   {c.userPhoto ? (

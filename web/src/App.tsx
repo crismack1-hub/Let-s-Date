@@ -48,6 +48,20 @@ function App() {
   }, [token]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get("chat");
+    if (target) {
+      setChatTarget(target);
+      setCurrentPage("chat");
+      params.delete("chat");
+      const search = params.toString();
+      const next = window.location.pathname + (search ? `?${search}` : "") + window.location.hash;
+      window.history.replaceState({}, "", next);
+    }
+  }, []);
+
+  useEffect(() => {
     if (socket) {
       socket.on("new-like", () => {
         setUnreadLikes((prev) => prev + 1);

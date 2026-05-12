@@ -26,7 +26,7 @@
         /* Sidebar */
         .sidebar {
             order: 0;
-            width: 320px;
+            width: 400px;
             background: #f3f3f3;
             border-right: 1px solid #ddd;
             display: flex;
@@ -861,7 +861,8 @@
 
         .tab-bar {
             display: flex;
-            gap: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
             margin-bottom: 12px;
         }
 
@@ -880,6 +881,52 @@
         .tab-btn.active {
             background: #0078d4;
             color: white;
+        }
+
+        .tab-btn-web {
+            flex: 0 1 auto;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: #ff5a6e;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn-web:hover {
+            background: #e84a5e;
+        }
+
+        .tab-btn-signout {
+            flex: 0 0 auto;
+            border: 1px solid #fecaca;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: #fee2e2;
+            color: #b91c1c;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .tab-btn-signout:hover {
+            background: #fecaca;
+        }
+
+        .sidebar-note {
+            padding: 10px 15px 4px;
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 500;
         }
 
         .sidebar-view {
@@ -1167,9 +1214,179 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #666;
         }
+
+        /* Landing page */
+        .landing-page {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: linear-gradient(135deg, #ff5a6e 0%, #ff8a9a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-y: auto;
+        }
+
+        .landing-page.hidden {
+            display: none !important;
+        }
+
+        .landing-logo {
+            font-size: 72px;
+            line-height: 1;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.25));
+        }
+
+        .landing-brand {
+            font-size: 44px;
+            font-weight: 800;
+            letter-spacing: -1.2px;
+            margin-bottom: 10px;
+        }
+
+        .landing-tagline {
+            font-size: 16px;
+            opacity: 0.95;
+            margin-bottom: 32px;
+            text-align: center;
+            max-width: 420px;
+            line-height: 1.5;
+        }
+
+        .landing-card {
+            background: #ffffff;
+            color: #14142b;
+            border-radius: 18px;
+            padding: 26px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+        }
+
+        .landing-tab-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .landing-tab {
+            flex: 1;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            background: #f3f3f3;
+            color: #666;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .landing-tab.active {
+            background: #ff5a6e;
+            color: #ffffff;
+        }
+
+        .landing-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .landing-form input {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #e4e4e8;
+            font-size: 14px;
+            background: #fafbfc;
+            color: #14142b;
+        }
+
+        .landing-form input:focus {
+            outline: none;
+            border-color: #ff5a6e;
+            background: #ffffff;
+        }
+
+        .landing-form button {
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            background: #ff5a6e;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .landing-form button:hover {
+            background: #e84a5e;
+        }
+
+        .landing-web-link {
+            margin-top: 24px;
+            color: #ffffff;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .landing-web-link:hover {
+            background: rgba(255, 255, 255, 0.32);
+        }
+
+        .landing-help {
+            margin: -2px 2px 4px;
+            font-size: 12px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        .landing-help a {
+            color: #ff5a6e;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .landing-help a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
+    <!-- Landing page -->
+    <div class="landing-page" id="landingPage">
+        <div class="landing-logo">💕</div>
+        <div class="landing-brand">Let's Date</div>
+        <div class="landing-tagline">Real people. Real conversations. Meet your match.</div>
+
+        <div class="landing-card">
+            <div class="landing-tab-row">
+                <button type="button" class="landing-tab active" id="landingSignInTab">Sign in</button>
+                <button type="button" class="landing-tab" id="landingSignUpTab">Sign up</button>
+            </div>
+
+            <form class="landing-form" id="landingForm">
+                <input type="text" id="landingName" placeholder="Your name" required maxlength="30" autocomplete="name">
+                <input type="tel" id="landingPhone" placeholder="Phone number" maxlength="20" autocomplete="tel" required>
+                <p class="landing-help" id="landingHelp" style="display:none;">Complete profile on the <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer">website</a>.</p>
+                <button type="submit" id="landingSubmit">Sign in</button>
+            </form>
+        </div>
+
+        <a href="http://localhost:5173" target="_blank" rel="noopener noreferrer" class="landing-web-link">🌐 Visit the website</a>
+    </div>
+
     <div class="container">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -1186,11 +1403,14 @@
                     <button class="tab-btn" data-tab="status">Status</button>
                     <button class="tab-btn" data-tab="calls">Calls</button>
                     <button class="tab-btn" data-tab="profile">Profile</button>
+                    <a class="tab-btn-web" href="http://localhost:5173" target="_blank" rel="noopener noreferrer" title="Open the Let's Date web app">🌐 Web</a>
+                    <button class="tab-btn-signout" id="signOutBtn" type="button" title="Sign out" aria-label="Sign out">🚪</button>
                 </div>
                 <input type="text" class="search-box" placeholder="Search contacts..." id="searchBox">
             </div>
 
             <div id="chatView" class="sidebar-view">
+                <div class="sidebar-note">Select a contact to start chatting</div>
                 <div class="section-actions">
                     <button class="action-btn" id="createGroupBtn">+ New Group</button>
                 </div>
@@ -1257,7 +1477,7 @@
                 <div class="chat-title">
                     <img id="selectedUserAvatar" src="" alt="" style="display:none;">
                     <div>
-                        <h2 id="selectedUserName">Select a contact to start chatting</h2>
+                        <h2 id="selectedUserName"></h2>
                         <div class="status" id="selectedUserStatus"></div>
                     </div>
                 </div>
@@ -1267,9 +1487,7 @@
                 </div>
             </div>
 
-            <div class="messages-area" id="messagesArea">
-                <div class="empty-state">Select a contact to start chatting</div>
-            </div>
+            <div class="messages-area" id="messagesArea"></div>
 
             <div class="input-area hidden" id="inputArea">
                 <div class="input-wrapper">
@@ -2081,7 +2299,80 @@
             });
         }
 
-        init();
+        // Landing page: sign in / sign up
+        const landingPageEl = document.getElementById('landingPage');
+        const landingFormEl = document.getElementById('landingForm');
+        const landingNameEl = document.getElementById('landingName');
+        const landingPhoneEl = document.getElementById('landingPhone');
+        const landingHelpEl = document.getElementById('landingHelp');
+        const landingSubmitEl = document.getElementById('landingSubmit');
+        const landingSignInTabEl = document.getElementById('landingSignInTab');
+        const landingSignUpTabEl = document.getElementById('landingSignUpTab');
+        let landingMode = 'signin';
+        let appStarted = false;
+
+        function setLandingMode(mode) {
+            landingMode = mode;
+            const isSignIn = mode === 'signin';
+            landingSignInTabEl.classList.toggle('active', isSignIn);
+            landingSignUpTabEl.classList.toggle('active', !isSignIn);
+            landingSubmitEl.textContent = isSignIn ? 'Sign in' : 'Create account';
+            landingHelpEl.style.display = isSignIn ? 'none' : '';
+        }
+
+        function showLanding() {
+            landingPageEl.classList.remove('hidden');
+            landingNameEl.value = '';
+            landingPhoneEl.value = '';
+            setLandingMode('signin');
+            setTimeout(() => landingNameEl.focus(), 0);
+        }
+
+        function hideLanding() {
+            landingPageEl.classList.add('hidden');
+        }
+
+        function completeSignIn(name, phone) {
+            const cleanedName = (name || '').trim();
+            const cleanedPhone = (phone || '').trim();
+            if (!cleanedName || !cleanedPhone) return;
+            if (landingMode === 'signup') {
+                // A fresh sign-up: clear prior session state so setup runs again.
+                localStorage.removeItem('setupCompleted');
+                localStorage.removeItem('subscriptionPlan');
+            }
+            localStorage.setItem('userName', cleanedName);
+            localStorage.setItem('userPhone', cleanedPhone);
+            localStorage.setItem('signedIn', '1');
+            hideLanding();
+            if (appStarted) {
+                window.location.reload();
+            } else {
+                appStarted = true;
+                init();
+            }
+        }
+
+        landingSignInTabEl.addEventListener('click', () => setLandingMode('signin'));
+        landingSignUpTabEl.addEventListener('click', () => setLandingMode('signup'));
+        landingFormEl.addEventListener('submit', (e) => {
+            e.preventDefault();
+            completeSignIn(landingNameEl.value, landingPhoneEl.value);
+        });
+
+        const signOutBtnEl = document.getElementById('signOutBtn');
+        signOutBtnEl.addEventListener('click', () => {
+            localStorage.removeItem('signedIn');
+            window.location.reload();
+        });
+
+        if (localStorage.getItem('signedIn')) {
+            hideLanding();
+            appStarted = true;
+            init();
+        } else {
+            showLanding();
+        }
     </script>
 </body>
 </html>

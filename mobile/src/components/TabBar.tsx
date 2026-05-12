@@ -28,16 +28,38 @@ export function TabBar({ active, onChange }: TabBarProps) {
     <View style={styles.bar}>
       {tabs.map((t) => {
         const isActive = active === t.id;
+        const isWeb = t.id === "web";
         return (
           <Pressable
             key={t.id}
             onPress={() => onChange(t.id)}
-            style={[styles.tab, isActive && styles.tabActive]}
+            style={[
+              styles.tab,
+              isActive && !isWeb && styles.tabActive,
+              isWeb && styles.tabWeb,
+            ]}
             accessibilityRole="button"
             accessibilityState={{ selected: isActive }}
+            accessibilityLabel={isWeb ? "Open the website" : t.label}
           >
-            <Text style={[styles.icon, isActive && styles.iconActive]}>{t.icon}</Text>
-            <Text style={[styles.label, isActive && styles.labelActive]}>{t.label}</Text>
+            <Text
+              style={[
+                styles.icon,
+                isActive && !isWeb && styles.iconActive,
+                isWeb && styles.iconWeb,
+              ]}
+            >
+              {t.icon}
+            </Text>
+            <Text
+              style={[
+                styles.label,
+                isActive && !isWeb && styles.labelActive,
+                isWeb && styles.labelWeb,
+              ]}
+            >
+              {t.label}
+            </Text>
           </Pressable>
         );
       })}
@@ -64,6 +86,16 @@ const styles = StyleSheet.create({
   tabActive: {
     backgroundColor: "#e8f5f1",
   },
+  tabWeb: {
+    backgroundColor: "#ff5a6e",
+    marginHorizontal: 4,
+    paddingVertical: 8,
+    shadowColor: "#ff5a6e",
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
+  },
   icon: {
     fontSize: 20,
     color: "#6b7280",
@@ -72,6 +104,9 @@ const styles = StyleSheet.create({
   iconActive: {
     color: "#075e54",
   },
+  iconWeb: {
+    color: "#ffffff",
+  },
   label: {
     fontSize: 11,
     color: "#6b7280",
@@ -79,6 +114,10 @@ const styles = StyleSheet.create({
   },
   labelActive: {
     color: "#075e54",
+    fontWeight: "700",
+  },
+  labelWeb: {
+    color: "#ffffff",
     fontWeight: "700",
   },
 });
