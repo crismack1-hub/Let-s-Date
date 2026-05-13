@@ -31,8 +31,20 @@ const AVAILABLE_INTERESTS = [
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
-// Resize an image File via a canvas, returning a JPEG data URL. Keeps profile
+// Pick an output MIME for the canvas re-encode based on the input file. PNG
+// keeps PNG (preserves transparency); WebP stays WebP. Everything else —
+// JPEG, HEIC, GIF, BMP, TIFF, AVIF, unknown — gets JPEG, which every browser
+// can encode and which compresses photos well.
+function pickOutputMime(file: File): { mime: string; lossy: boolean } {
+  const t = (file.type || "").toLowerCase();
+  if (t === "image/png") return { mime: "image/png", lossy: false };
+  if (t === "image/webp") return { mime: "image/webp", lossy: true };
+  return { mime: "image/jpeg", lossy: true };
+}
+
+// Resize an image File via a canvas, returning a data URL. Keeps profile
 // photos under ~1MB so they fit in JSON bodies and don't bloat in-memory state.
+// Preserves the original format where it matters (PNG transparency, WebP).
 async function resizeImageFile(
   file: File,
   maxDimension = 1600,
@@ -43,7 +55,12 @@ async function resizeImageFile(
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
       const el = new Image();
       el.onload = () => resolve(el);
-      el.onerror = () => reject(new Error("Could not decode image."));
+      el.onerror = () =>
+        reject(
+          new Error(
+            "Could not decode image. iPhone HEIC photos sometimes need to be exported as JPEG first.",
+          ),
+        );
       el.src = objectUrl;
     });
     const scale = Math.min(1, maxDimension / Math.max(img.width, img.height));
@@ -55,7 +72,8 @@ async function resizeImageFile(
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("Canvas 2d context unavailable.");
     ctx.drawImage(img, 0, 0, w, h);
-    return canvas.toDataURL("image/jpeg", quality);
+    const { mime, lossy } = pickOutputMime(file);
+    return canvas.toDataURL(mime, lossy ? quality : undefined);
   } finally {
     URL.revokeObjectURL(objectUrl);
   }
