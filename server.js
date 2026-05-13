@@ -1,7 +1,10 @@
 const express = require('express');
 const http = require('http');
+const path = require('path');
+const { spawn } = require('child_process');
 const socketIo = require('socket.io');
 const cors = require('cors');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
@@ -17,7 +20,31 @@ const io = socketIo(server, {
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static(__dirname));
+
+// Legacy Let's Date HTML app, kept reachable at /legacy
+app.get(['/legacy', '/legacy/'], (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Proxy everything that isn't an API route, socket.io traffic, or /legacy
+// to the Vite dev server so the React web app is the main entry portal.
+const VITE_TARGET = process.env.VITE_TARGET || 'http://localhost:5173';
+const viteProxy = createProxyMiddleware({
+  target: VITE_TARGET,
+  changeOrigin: true,
+  ws: true, // Vite HMR uses websockets
+  pathFilter: (pathname) =>
+    !pathname.startsWith('/api') &&
+    !pathname.startsWith('/socket.io') &&
+    !pathname.startsWith('/legacy'),
+});
+app.use(viteProxy);
+server.on('upgrade', (req, socket, head) => {
+  // Forward Vite HMR websocket upgrades, but leave socket.io upgrades for Socket.IO.
+  if (req.url && !req.url.startsWith('/socket.io')) {
+    viteProxy.upgrade(req, socket, head);
+  }
+});
 
 // In-memory storage
 let users = {};
@@ -613,7 +640,6 @@ io.on('connection', (socket) => {
     console.log('Users online:', Object.keys(users).length);
   });
 
-<<<<<<< HEAD
   socket.on('join-room', (roomId) => {
     if (!roomId) return;
     socket.join(roomId);
@@ -656,12 +682,9 @@ io.on('connection', (socket) => {
     socket.emit('messageSent', messageObj);
   });
 
-  // Send message (1:1 or group)
-=======
   // Send message (1:1 or group). Trust socket.id for the sender identity
   // rather than a client-supplied `from` — clients don't know their own
   // socket.id ahead of time, and trusting the client invites impersonation.
->>>>>>> 7c367e6166863461b501918bcb650bfbf949faa1
   socket.on('sendMessage', (data) => {
     const { to, message, fromName, groupId, type = 'text', mediaUrl } = data;
     if ((to || groupId) && message) {
@@ -945,5 +968,29 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 4000;
 server.listen(PORT, () => {
-  console.log(`✅ Skype-like app running on http://localhost:${PORT}`);
+  console.log(`✅ App running on http://localhost:${PORT}`);
+  console.log(`   ↳ Legacy HTML app at http://localhost:${PORT}/legacy`);
 });
+
+// Auto-spawn the Vite dev server unless told not to (e.g. SKIP_VITE=1) or it's
+// already running externally. The proxy above forwards / to whatever's on 5173.
+if (process.env.SKIP_VITE !== '1') {
+  const viteCwd = path.join(__dirname, 'web');
+  // shell: true is needed on Windows so npm.cmd resolves; pass the command as a
+  // single literal string to avoid Node's DEP0190 shell-args deprecation.
+  const vite = spawn('npm run dev', {
+    cwd: viteCwd,
+    shell: true,
+    stdio: ['ignore', 'inherit', 'inherit'],
+    env: { ...process.env },
+  });
+  vite.on('error', (err) => {
+    console.error('[vite] failed to spawn:', err.message);
+  });
+  const stopVite = () => {
+    if (!vite.killed) vite.kill();
+  };
+  process.on('exit', stopVite);
+  process.on('SIGINT', () => { stopVite(); process.exit(0); });
+  process.on('SIGTERM', () => { stopVite(); process.exit(0); });
+}
