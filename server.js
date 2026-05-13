@@ -19,8 +19,10 @@ const io = socketIo(server, {
 
 // Middleware
 app.use(cors());
-// Default limit (100kb) is too small for profile photos sent as base64 data URLs.
-app.use(express.json({ limit: '10mb' }));
+// Profile photos arrive inline as base64 data URLs. The client resizes them
+// before upload (see web/src/components/ProfilePage.tsx); this generous limit
+// is a safety net for unresized uploads or other large payloads.
+app.use(express.json({ limit: '25mb' }));
 
 // Legacy Let's Date HTML app, kept reachable at /legacy
 app.get(['/legacy', '/legacy/'], (_req, res) => {

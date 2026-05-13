@@ -31,6 +31,36 @@ const AVAILABLE_INTERESTS = [
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
 
+// Resize an image File via a canvas, returning a JPEG data URL. Keeps profile
+// photos under ~1MB so they fit in JSON bodies and don't bloat in-memory state.
+async function resizeImageFile(
+  file: File,
+  maxDimension = 1600,
+  quality = 0.85,
+): Promise<string> {
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const el = new Image();
+      el.onload = () => resolve(el);
+      el.onerror = () => reject(new Error("Could not decode image."));
+      el.src = objectUrl;
+    });
+    const scale = Math.min(1, maxDimension / Math.max(img.width, img.height));
+    const w = Math.round(img.width * scale);
+    const h = Math.round(img.height * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas 2d context unavailable.");
+    ctx.drawImage(img, 0, 0, w, h);
+    return canvas.toDataURL("image/jpeg", quality);
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<UserProfile> | null>(null);
@@ -84,13 +114,14 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
   const handlePhotoFiles = async (files: FileList | null) => {
     if (!files || !files.length || !formData) return;
     const file = files[0];
-    const dataUrl = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.onerror = () => reject(reader.error);
-      reader.readAsDataURL(file);
-    });
-    setFormData({ ...formData, photos: [...(formData.photos ?? []), dataUrl] });
+    try {
+      const dataUrl = await resizeImageFile(file, 1600, 0.85);
+      setFormData({ ...formData, photos: [...(formData.photos ?? []), dataUrl] });
+    } catch (err) {
+      console.error("Could not process image:", err);
+      setSaveError("Could not read that image. Try a different file.");
+      setSaveStatus("error");
+    }
   };
 
   const handleRemovePhoto = (index: number) => {
