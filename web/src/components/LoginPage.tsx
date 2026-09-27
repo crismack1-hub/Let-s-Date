@@ -71,7 +71,7 @@ export function LoginPage({ onLogin, onSignUp, onViewFeature, isLoading }: Login
     <div className="login-page">
       <div className="login-container">
         <div className="login-header">
-          <h1 className="app-title">💕 Let's Date</h1>
+          <h1 className="app-title">💬 Let's Chat</h1>
           <p className="app-subtitle">Find your perfect match</p>
         </div>
 

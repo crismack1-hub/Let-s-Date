@@ -25,9 +25,9 @@ export function Navbar({
           type="button"
           className="logo logo-link"
           onClick={() => onNavigate("discover")}
-          aria-label="Let's Date — go to home"
+          aria-label="Let's Chat — go to home"
         >
-          💕 Let's Date
+          💬 Let's Chat
         </button>
       </div>
 

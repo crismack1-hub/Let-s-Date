@@ -83,6 +83,7 @@ async function resizeImageFile(
 export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<UserProfile> | null>(null);
+  const [ageInput, setAgeInput] = useState("");
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -90,6 +91,7 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
   useEffect(() => {
     if (user) {
       setFormData(user);
+      setAgeInput(String(user.age ?? ""));
       setSaveStatus("idle");
     }
   }, [user]);
@@ -98,6 +100,13 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
 
   const handleSaveProfile = async () => {
     if (!formData) return;
+    const age = Number(ageInput);
+    if (!Number.isInteger(age) || age < 18 || age > 120) {
+      setSaveError("Enter an age between 18 and 120.");
+      setSaveStatus("error");
+      return;
+    }
+
     setSaveStatus("saving");
     setSaveError(null);
     try {
@@ -107,7 +116,7 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, age }),
       });
 
       if (!response.ok) {
@@ -150,7 +159,10 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
   };
 
   const handleCancelEdit = () => {
-    if (user) setFormData(user);
+    if (user) {
+      setFormData(user);
+      setAgeInput(String(user.age ?? ""));
+    }
     setIsEditing(false);
     setSaveStatus("idle");
     setSaveError(null);
@@ -239,11 +251,14 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
                   <input
                     type="number"
                     min={18}
-                    max={100}
-                    value={formData?.age ?? ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, age: parseInt(e.target.value) || 18 })
-                    }
+                    max={120}
+                    step={1}
+                    value={ageInput}
+                    onChange={(e) => {
+                      setAgeInput(e.target.value);
+                      setSaveStatus("idle");
+                      setSaveError(null);
+                    }}
                   />
                 </div>
                 <div className="form-group">

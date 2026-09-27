@@ -82,6 +82,24 @@ export function useAuth() {
       });
       const data = await response.json();
       if (response.ok) {
+        const profileResponse = await fetch(apiUrl("/api/profile"), {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${data.token}`,
+          },
+          body: JSON.stringify({
+            name: signUpData.name,
+            age: signUpData.age,
+            gender: signUpData.gender,
+            email: signUpData.email,
+            phone: signUpData.phone,
+          }),
+        });
+        if (!profileResponse.ok) {
+          return { success: false, error: "Account created, but profile details could not be saved. Please log in and update your profile." };
+        }
+
         setToken(data.token);
         setUser(data.user);
         localStorage.setItem("authToken", data.token);

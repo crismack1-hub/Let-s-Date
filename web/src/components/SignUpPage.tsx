@@ -19,6 +19,7 @@ export interface SignUpData {
 }
 
 export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }: SignUpPageProps) {
+  const [ageInput, setAgeInput] = useState("18");
   const [formData, setFormData] = useState<SignUpData>({
     name: "",
     phone: "",
@@ -33,9 +34,14 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    if (name === "age") {
+      setAgeInput(value);
+      setFormData((prev) => ({ ...prev, age: value === "" ? 0 : Number(value) }));
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "age" ? parseInt(value) : value,
+      [name]: value,
     }));
   };
 
@@ -44,8 +50,8 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
       setError("Name is required");
       return false;
     }
-    if (!formData.age || formData.age < 18) {
-      setError("You must be at least 18 years old");
+    if (!Number.isInteger(formData.age) || formData.age < 18 || formData.age > 120) {
+      setError("Enter an age between 18 and 120");
       return false;
     }
     if (!formData.gender) {
@@ -105,7 +111,7 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
     <div className="signup-page">
       <div className="signup-container">
         <div className="signup-header">
-          <h1 className="app-title">💕 Let's Date</h1>
+          <h1 className="app-title">💬 Let's Chat</h1>
           <p className="app-subtitle">Join millions finding love</p>
         </div>
 
@@ -133,7 +139,8 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
                   name="age"
                   min="18"
                   max="120"
-                  value={formData.age}
+                  step="1"
+                  value={ageInput}
                   onChange={handleChange}
                   disabled={isLoading}
                 />
