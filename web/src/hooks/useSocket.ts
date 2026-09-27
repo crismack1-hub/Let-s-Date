@@ -1,8 +1,9 @@
 ﻿import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import type { Socket } from "socket.io-client";
+import { API_BASE_URL } from "../api";
 
-const BACKEND_URL = "http://localhost:4000";
+const BACKEND_URL = API_BASE_URL;
 
 export function useSocket(token: string | null) {
   const [socket, setSocket] = useState<Socket | null>(null);

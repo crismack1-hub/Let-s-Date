@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect } from "react";
 import { Conversation, Message } from "../types";
 import { useRef } from "react";
+import { apiUrl } from "../api";
 import { useSubscription, FREE_DAILY_MESSAGE_LIMIT } from "../hooks/useSubscription";
 import { CallOverlay, PhoneIcon, VideoIcon, type CallType } from "./CallOverlay";
 import "../styles/ChatPage.css";
@@ -86,7 +87,7 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, chatTarget,
   const fetchConversations = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:4000/api/conversations", {
+      const response = await fetch(apiUrl("/api/conversations"), {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -113,7 +114,7 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, chatTarget,
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/messages/${userId}`,
+        apiUrl(`/api/messages/${userId}`),
         { headers: { Authorization: `Bearer ${token}` } },
       );
       if (response.ok) {

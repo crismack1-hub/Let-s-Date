@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Conversation } from "../types";
+import { apiUrl } from "../api";
 import { useSubscription, FREE_DAILY_MESSAGE_LIMIT } from "../hooks/useSubscription";
 import "../styles/FeaturePages.css";
 
@@ -17,7 +18,7 @@ export function RealConversationsPage({ token, onNavigate }: RealConversationsPa
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:4000/api/conversations", {
+        const res = await fetch(apiUrl("/api/conversations"), {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) setConversations(await res.json());

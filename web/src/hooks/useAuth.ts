@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect } from "react";
 import type { SignUpData } from "../components/SignUpPage";
+import { apiUrl } from "../api";
 
 export interface AuthUser {
   id: string;
@@ -28,7 +29,7 @@ export function useAuth() {
 
   const verifyToken = async (token: string) => {
     try {
-      const response = await fetch("http://localhost:4000/api/auth/verify", {
+      const response = await fetch(apiUrl("/api/auth/verify"), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.ok) {
@@ -49,7 +50,7 @@ export function useAuth() {
 
   const login = async (phone: string, password: string) => {
     try {
-      const response = await fetch("http://localhost:4000/api/auth/login", {
+      const response = await fetch(apiUrl("/api/auth/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone, password }),
@@ -70,7 +71,7 @@ export function useAuth() {
 
   const signUp = async (signUpData: SignUpData) => {
     try {
-      const response = await fetch("http://localhost:4000/api/auth/register", {
+      const response = await fetch(apiUrl("/api/auth/register"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

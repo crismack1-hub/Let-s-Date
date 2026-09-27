@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Match } from "../types";
+import { apiUrl } from "../api";
 import "../styles/MatchesPage.css";
 
 interface MatchesPageProps {
@@ -21,7 +22,7 @@ export function MatchesPage({ token, onMessage }: MatchesPageProps) {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:4000/api/matches?type=${filterType}`,
+        apiUrl(`/api/matches?type=${filterType}`),
         { headers: { Authorization: `Bearer ${token}` } },
       );
       if (response.ok) {
@@ -41,7 +42,7 @@ export function MatchesPage({ token, onMessage }: MatchesPageProps) {
   const handleUnmatch = async (matchId: string) => {
     if (!window.confirm("Are you sure you want to unmatch?")) return;
     try {
-      await fetch(`http://localhost:4000/api/matches/${matchId}`, {
+      await fetch(apiUrl(`/api/matches/${matchId}`), {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -54,7 +55,7 @@ export function MatchesPage({ token, onMessage }: MatchesPageProps) {
 
   const handleToggleFavorite = async (matchId: string) => {
     try {
-      const res = await fetch(`http://localhost:4000/api/matches/${matchId}/favorite`, {
+      const res = await fetch(apiUrl(`/api/matches/${matchId}/favorite`), {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });

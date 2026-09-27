@@ -2,6 +2,7 @@
 import { useAuth } from "./hooks/useAuth";
 import { useSocket } from "./hooks/useSocket";
 import { UserProfile } from "./types";
+import { apiUrl } from "./api";
 import { LoginPage } from "./components/LoginPage";
 import type { SignUpData } from "./components/SignUpPage";
 import { Navbar } from "./components/Navbar";
@@ -88,7 +89,7 @@ function App() {
     if (!token) return;
 
     try {
-      const response = await fetch("http://localhost:4000/api/profile", {
+      const response = await fetch(apiUrl("/api/profile"), {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -105,7 +106,7 @@ function App() {
     if (!token) return;
 
     try {
-      const response = await fetch("http://localhost:4000/api/unread-counts", {
+      const response = await fetch(apiUrl("/api/unread-counts"), {
         headers: { Authorization: `Bearer ${token}` },
       });
 

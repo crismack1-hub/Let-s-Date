@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { UserProfile } from "../types";
+import { apiUrl } from "../api";
 import "../styles/LikesPage.css";
 
 interface LikesPageProps {
@@ -17,7 +18,7 @@ export function LikesPage({ token }: LikesPageProps) {
   const fetchLikes = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:4000/api/likes", {
+      const response = await fetch(apiUrl("/api/likes"), {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -34,7 +35,7 @@ export function LikesPage({ token }: LikesPageProps) {
 
   const handleLikeBack = async (userId: string) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/likes`, {
+      const response = await fetch(apiUrl(`/api/likes`), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

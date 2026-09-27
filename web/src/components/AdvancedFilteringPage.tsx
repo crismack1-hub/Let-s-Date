@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { UserProfile } from "../types";
+import { apiUrl } from "../api";
 import "../styles/FeaturePages.css";
 import "../styles/AdvancedFiltering.css";
 
@@ -86,7 +87,7 @@ export function AdvancedFilteringPage({ token, onNavigate }: AdvancedFilteringPa
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch("http://localhost:4000/api/discover", {
+        const res = await fetch(apiUrl("/api/discover"), {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) setUsers(await res.json());
@@ -128,7 +129,7 @@ export function AdvancedFilteringPage({ token, onNavigate }: AdvancedFilteringPa
 
   const handleLike = async (userId: string) => {
     try {
-      const res = await fetch("http://localhost:4000/api/likes", {
+      const res = await fetch(apiUrl("/api/likes"), {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ toUserId: userId }),

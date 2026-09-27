@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { UserProfile } from "../types";
 import { DiscoverCard } from "./DiscoverCard";
+import { apiUrl } from "../api";
 import "../styles/DiscoverPage.css";
 
 interface DiscoverPageProps {
@@ -35,7 +36,7 @@ export function DiscoverPage({ token }: DiscoverPageProps) {
         queryParams.append("location", filters.location);
       }
 
-      const response = await fetch(`http://localhost:4000/api/discover?${queryParams}`, {
+      const response = await fetch(apiUrl(`/api/discover?${queryParams}`), {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -52,7 +53,7 @@ export function DiscoverPage({ token }: DiscoverPageProps) {
 
   const handleLike = async (userId: string) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/likes`, {
+      const response = await fetch(apiUrl(`/api/likes`), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

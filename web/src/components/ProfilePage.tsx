@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { UserProfile } from "../types";
+import { apiUrl } from "../api";
 import "../styles/ProfilePage.css";
 
 interface ProfilePageProps {
@@ -100,7 +101,7 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
     setSaveStatus("saving");
     setSaveError(null);
     try {
-      const response = await fetch("http://localhost:4000/api/profile", {
+      const response = await fetch(apiUrl("/api/profile"), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

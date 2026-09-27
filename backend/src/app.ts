@@ -9,15 +9,20 @@ import { profilesRouter } from "./profiles";
 export function createApp() {
   const app = express();
   const server = http.createServer(app);
+  const allowedOrigins = (process.env.CORS_ORIGIN ?? "http://localhost:5173,http://localhost:5174,http://localhost:19006")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+
   const io = new Server(server, {
     cors: {
-      origin: ["http://localhost:5173", "http://localhost:19006"],
+      origin: allowedOrigins,
       methods: ["GET", "POST"],
       credentials: true,
     },
   });
 
-  app.use(cors({ origin: true, credentials: true }));
+  app.use(cors({ origin: allowedOrigins, credentials: true }));
   app.use(express.json({ limit: "10mb" }));
 
   app.use("/api/auth", authRouter);
