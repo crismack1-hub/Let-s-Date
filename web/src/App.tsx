@@ -140,9 +140,12 @@ function App() {
   };
 
   const handleSignUp = async (data: SignUpData) => {
+    if (isStandaloneMessages) {
+      setCurrentPage("discover");
+    }
     const result = await signUp(data);
     if (result.success && isStandaloneMessages) {
-      window.location.assign("/");
+      window.location.replace("/");
     }
     return result;
   };
