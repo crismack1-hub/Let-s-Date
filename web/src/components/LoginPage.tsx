@@ -8,6 +8,7 @@ import "../styles/LoginPage.css";
 const wantsSignUpFromUrl = () => {
   if (typeof window === "undefined") return false;
   const { search, hash } = window.location;
+  if (window.location.pathname === "/signup=1") return true;
   if (/[?&]signup=1\b/.test(search)) return true;
   if (hash === "#signup" || hash === "#/signup") return true;
   return false;

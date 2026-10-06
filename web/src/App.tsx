@@ -30,6 +30,9 @@ import "./App.css";
 function App() {
   const isStandaloneMessages =
     typeof window !== "undefined" && window.location.pathname === "/messages";
+  const isStandaloneSignup =
+    typeof window !== "undefined" && window.location.pathname === "/signup=1";
+  const isStandaloneAuth = isStandaloneMessages || isStandaloneSignup;
   const {
     user,
     token,
@@ -140,11 +143,11 @@ function App() {
   };
 
   const handleSignUp = async (data: SignUpData) => {
-    if (isStandaloneMessages) {
+    if (isStandaloneAuth) {
       setCurrentPage("discover");
     }
     const result = await signUp(data);
-    if (result.success && isStandaloneMessages) {
+    if (result.success && isStandaloneAuth) {
       window.location.replace("/");
     }
     return result;
@@ -183,7 +186,7 @@ function App() {
         onViewFeature={handleViewFeature}
         isLoading={false}
         rememberedPhone={rememberedPhone}
-        messagingOnly={isStandaloneMessages}
+        messagingOnly={isStandaloneAuth}
       />
     );
   }
