@@ -9,6 +9,11 @@
   align-items: center;
 }
 
+.forgot-password-page {
+  grid-template-columns: minmax(0, 560px);
+  justify-content: center;
+}
+
 .login-container {
   background: white;
   padding: 40px;
@@ -28,6 +33,18 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.app-home-link {
+  color: inherit;
+  -webkit-text-fill-color: inherit;
+  text-decoration: none;
+}
+
+.app-home-link:focus-visible {
+  border-radius: 4px;
+  outline: 3px solid var(--primary-color);
+  outline-offset: 5px;
 }
 
 .app-subtitle {
@@ -66,6 +83,35 @@
   box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
 }
 
+.remember-me {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.credential-manager-note {
+  margin: -14px 0 0;
+  color: var(--text-light);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.phone-country-note {
+  margin: -10px 0 0;
+  color: var(--text-light);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.remember-me input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--primary-color);
+}
+
 .error-message {
   padding: 12px 14px;
   background-color: #fee;
@@ -73,6 +119,37 @@
   border-radius: var(--radius);
   color: #c00;
   font-size: 0.9rem;
+}
+
+.success-message,
+.development-code {
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.success-message {
+  background: #edf9f1;
+  border: 1px solid #b7e4c7;
+  color: #176b37;
+}
+
+.development-code {
+  background: #fff8e6;
+  border: 1px solid #f0d58a;
+  color: #70520b;
+}
+
+.forgot-password-link,
+.reset-resend {
+  align-self: flex-end;
+}
+
+.reset-phone-note {
+  margin: 0;
+  color: var(--text-light);
+  overflow-wrap: anywhere;
 }
 
 .login-btn {
@@ -219,4 +296,972 @@
   .login-features {
     display: none;
   }
+}
+
+.messaging-login-page {
+  background:
+    radial-gradient(circle at 15% 78%, rgba(255, 255, 255, 0.9) 0 2px, transparent 3px) 0 0 / 18px 18px,
+    radial-gradient(circle at 86% 12%, rgba(255, 255, 255, 0.78) 0 2px, transparent 3px) 9px 9px / 18px 18px,
+    conic-gradient(from 18deg at 78% 52%, #5ec9f5, #a9e9ff, #56c5f3, #9ce4fa, #5ec9f5);
+}
+
+.messaging-login-page::before,
+.messaging-login-page::after {
+  border: 0;
+  background: repeating-conic-gradient(
+    from 8deg,
+    rgba(255, 226, 89, 0.62) 0deg 8deg,
+    transparent 8deg 17deg
+  );
+  clip-path: circle(50%);
+}
+
+.messaging-login-page::before {
+  top: -230px;
+  left: -210px;
+  width: 640px;
+  height: 640px;
+  box-shadow: none;
+}
+
+.messaging-login-page::after {
+  right: -230px;
+  bottom: -260px;
+  width: 650px;
+  height: 650px;
+  box-shadow: none;
+}
+
+.messaging-login-page .login-container {
+  border: 4px solid #22213a;
+  border-radius: 34px 28px 36px 30px;
+  background:
+    radial-gradient(circle, rgba(255, 196, 0, 0.15) 0 2px, transparent 2.5px) 0 0 / 13px 13px,
+    #fff8dc;
+  box-shadow: 8px 10px 0 #22213a, 0 28px 60px rgba(26, 35, 65, 0.24);
+  backdrop-filter: none;
+}
+
+.messaging-login-page .login-container::before {
+  height: 11px;
+  background: repeating-linear-gradient(
+    135deg,
+    #ffcf32 0 18px,
+    #ff6b35 18px 36px,
+    #63d7f5 36px 54px,
+    #ae7bff 54px 72px
+  );
+}
+
+.messaging-login-page .login-header::before {
+  border: 3px solid #22213a;
+  border-radius: 999px 999px 999px 14px;
+  background: #ffdf57;
+  color: #22213a;
+  content: "HEY, YOU!";
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+  font-size: 0.7rem;
+  font-style: italic;
+  letter-spacing: 0.11em;
+  box-shadow: 3px 3px 0 #22213a;
+  transform: rotate(-3deg);
+}
+
+.messaging-login-page .app-title {
+  background: none;
+  color: #282344;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+  font-weight: 900;
+  -webkit-text-fill-color: #282344;
+  letter-spacing: -0.055em;
+  text-shadow: 2px 2px 0 #ffcb37;
+}
+
+.messaging-login-page .app-subtitle {
+  color: #56516d;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+  font-weight: 600;
+}
+
+.messaging-login-page .form-group label {
+  color: #302b49;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+  font-weight: 800;
+}
+
+.messaging-login-page .form-group input {
+  border: 3px solid #302b49;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 3px 3px 0 rgba(48, 43, 73, 0.18);
+}
+
+.messaging-login-page .form-group input:focus {
+  border-color: #6250d7;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(98, 80, 215, 0.16), 3px 3px 0 rgba(48, 43, 73, 0.18);
+}
+
+.messaging-login-page .remember-me {
+  color: #514d67;
+  font-weight: 600;
+}
+
+.messaging-login-page .remember-me input {
+  accent-color: #7656df;
+}
+
+.messaging-login-page .credential-manager-note {
+  color: #77718b;
+}
+
+.messaging-login-page .forgot-password-link,
+.messaging-login-page .login-footer .link-btn {
+  color: #5d49cf;
+  font-weight: 750;
+}
+
+.messaging-login-page .login-btn {
+  border: 3px solid #22213a;
+  border-radius: 16px;
+  background: linear-gradient(100deg, #ff6848, #f44369);
+  box-shadow: 0 5px 0 #22213a;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+  font-size: 1.02rem;
+  font-weight: 900;
+  letter-spacing: 0.045em;
+  text-shadow: 1px 2px 0 rgba(111, 30, 48, 0.2);
+}
+
+.messaging-login-page .login-btn:hover:not(:disabled) {
+  transform: translateY(-2px) rotate(-0.5deg);
+  box-shadow: 0 7px 0 #22213a;
+}
+
+/* Adult messaging brand refresh: calm editorial type, lilac accents and clear forms. */
+.messaging-login-page {
+  background:
+    radial-gradient(ellipse at 12% 14%, rgba(178, 157, 255, 0.2), transparent 34%),
+    radial-gradient(ellipse at 86% 84%, rgba(139, 226, 200, 0.18), transparent 36%),
+    #f7f7fb;
+}
+
+.messaging-login-page::before,
+.messaging-login-page::after {
+  border: 1px solid rgba(124, 91, 224, 0.1);
+  background: none;
+  border-radius: 50%;
+  clip-path: none;
+  pointer-events: none;
+}
+
+.messaging-login-page::before {
+  top: -220px;
+  left: -180px;
+  width: 520px;
+  height: 520px;
+  box-shadow:
+    0 0 0 34px rgba(124, 91, 224, 0.025),
+    0 0 0 72px rgba(124, 91, 224, 0.02);
+}
+
+.messaging-login-page::after {
+  right: -190px;
+  bottom: -260px;
+  width: 600px;
+  height: 600px;
+  box-shadow:
+    0 0 0 38px rgba(16, 185, 129, 0.025),
+    0 0 0 78px rgba(16, 185, 129, 0.02);
+}
+
+.messaging-login-page .login-container {
+  max-width: 470px;
+  padding: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 32px 80px rgba(36, 35, 61, 0.12),
+    0 5px 18px rgba(124, 91, 224, 0.05);
+  backdrop-filter: blur(18px);
+}
+
+.messaging-login-page .login-container::before {
+  height: 4px;
+  background: linear-gradient(90deg, #8b70e8, #b8a5ff 52%, #76d5b3);
+}
+
+.messaging-login-page .login-header {
+  margin-bottom: 32px;
+}
+
+.messaging-login-page .login-header::before {
+  display: inline-flex;
+  margin-bottom: 18px;
+  padding: 7px 11px;
+  border: 1px solid rgba(124, 91, 224, 0.13);
+  border-radius: 999px;
+  background: #f5f2ff;
+  color: #674bc2;
+  content: none;
+  font-family: inherit;
+  font-size: 0.64rem;
+  font-style: normal;
+  font-weight: 750;
+  letter-spacing: 0.105em;
+  box-shadow: none;
+  transform: none;
+}
+
+.messaging-login-page .app-title {
+  margin-bottom: 9px;
+  background: linear-gradient(120deg, #29243e, #6356a7);
+  background-clip: text;
+  color: #29243e;
+  font-family: inherit;
+  font-size: clamp(2.2rem, 6vw, 2.7rem);
+  font-weight: 750;
+  letter-spacing: -0.065em;
+  text-shadow: none;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.messaging-login-page .app-title::before {
+  display: inline-flex;
+  width: 35px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 9px;
+  border-radius: 12px;
+  background: linear-gradient(140deg, #9177eb, #6f57ca);
+  color: #fff;
+  content: "✦";
+  font-size: 1.15rem;
+  vertical-align: 0.12em;
+  -webkit-text-fill-color: #fff;
+}
+
+.messaging-login-page .app-subtitle {
+  color: #77748a;
+  font-family: inherit;
+  font-size: 0.98rem;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.messaging-login-page .login-form {
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.messaging-login-page .form-group {
+  gap: 7px;
+}
+
+.messaging-login-page .form-group label {
+  color: #39364c;
+  font-family: inherit;
+  font-size: 0.87rem;
+  font-weight: 650;
+}
+
+.messaging-login-page .form-group input {
+  min-height: 50px;
+  padding: 13px 15px;
+  border: 1px solid #e6e4ee;
+  border-radius: 12px;
+  background: #fbfaff;
+  box-shadow: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.messaging-login-page .form-group input:focus {
+  border-color: #9882e7;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(124, 91, 224, 0.1);
+}
+
+.messaging-login-page .remember-me {
+  color: #555267;
+  font-size: 0.87rem;
+  font-weight: 500;
+}
+
+.messaging-login-page .remember-me input {
+  accent-color: #765bd4;
+}
+
+.messaging-login-page .credential-manager-note {
+  margin-top: -10px;
+  color: #89869a;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.messaging-login-page .phone-country-note {
+  margin-top: -10px;
+  color: #89869a;
+  font-size: 0.76rem;
+}
+
+.messaging-login-page .forgot-password-link,
+.messaging-login-page .login-footer .link-btn {
+  color: #6850c2;
+  font-weight: 650;
+}
+
+.messaging-login-page .login-btn {
+  min-height: 51px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(105deg, #7960d3, #684fc1);
+  box-shadow: 0 9px 20px rgba(104, 79, 193, 0.2);
+  font-family: inherit;
+  font-size: 0.96rem;
+  font-weight: 650;
+  letter-spacing: 0.005em;
+  text-shadow: none;
+}
+
+.messaging-login-page .login-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 23px rgba(104, 79, 193, 0.26);
+}
+
+.messaging-login-page .login-footer {
+  color: #77748a;
+  font-size: 0.88rem;
+  font-weight: 400;
+}
+
+@media (max-width: 520px) {
+  .messaging-login-page .login-container {
+    padding: 36px 24px;
+    border-radius: 22px;
+  }
+}
+
+.messaging-login-page .login-footer {
+  color: #56516d;
+  font-weight: 600;
+}
+
+.messaging-login-page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 18% 16%, rgba(124, 58, 237, 0.24), transparent 34%),
+    radial-gradient(ellipse at 84% 82%, rgba(16, 185, 129, 0.19), transparent 34%),
+    #f6f7fb;
+}
+
+.messaging-login-page::before,
+.messaging-login-page::after {
+  position: absolute;
+  z-index: -1;
+  border: 1px solid rgba(124, 58, 237, 0.1);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.messaging-login-page::before {
+  top: -220px;
+  left: -180px;
+  width: 520px;
+  height: 520px;
+  box-shadow:
+    0 0 0 34px rgba(124, 58, 237, 0.025),
+    0 0 0 72px rgba(124, 58, 237, 0.02);
+}
+
+.messaging-login-page::after {
+  right: -190px;
+  bottom: -260px;
+  width: 600px;
+  height: 600px;
+  border-color: rgba(16, 185, 129, 0.12);
+  box-shadow:
+    0 0 0 38px rgba(16, 185, 129, 0.025),
+    0 0 0 78px rgba(16, 185, 129, 0.02);
+}
+
+.messaging-login-page .login-container {
+  position: relative;
+  overflow: hidden;
+  max-width: 470px;
+  padding: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow:
+    0 36px 90px rgba(30, 41, 59, 0.13),
+    0 8px 24px rgba(124, 58, 237, 0.06);
+  backdrop-filter: blur(22px);
+}
+
+.messaging-login-page .login-container::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #8b5cf6, #c084fc 48%, #34d399);
+  content: "";
+}
+
+.messaging-login-page .login-header {
+  margin-bottom: 34px;
+}
+
+.messaging-login-page .login-header::before {
+  display: inline-flex;
+  margin-bottom: 16px;
+  padding: 7px 12px;
+  border: 1px solid rgba(124, 58, 237, 0.12);
+  border-radius: 999px;
+  background: linear-gradient(100deg, rgba(124, 58, 237, 0.07), rgba(16, 185, 129, 0.07));
+  color: #6d28d9;
+  content: "GOOD PEOPLE. GOOD CONVERSATIONS.";
+  font-size: 0.65rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+}
+
+.messaging-login-page .app-title {
+  margin-bottom: 8px;
+  font-size: clamp(2.15rem, 6vw, 2.65rem);
+  letter-spacing: -0.06em;
+}
+
+.messaging-login-page .app-subtitle {
+  font-size: 1rem;
+}
+
+.messaging-login-page .login-form {
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.messaging-login-page .form-group {
+  gap: 7px;
+}
+
+.messaging-login-page .form-group label {
+  color: #334155;
+  font-size: 0.86rem;
+  font-weight: 650;
+}
+
+.messaging-login-page .form-group input {
+  min-height: 50px;
+  padding: 13px 15px;
+  border-color: #e5e7ef;
+  border-radius: 13px;
+  background: rgba(248, 250, 252, 0.82);
+  font-size: 0.95rem;
+}
+
+.messaging-login-page .form-group input:focus {
+  border-color: rgba(124, 58, 237, 0.5);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+}
+
+.messaging-login-page .remember-me {
+  color: #475569;
+  font-size: 0.87rem;
+}
+
+.messaging-login-page .remember-me input {
+  accent-color: #7c3aed;
+}
+
+.messaging-login-page .credential-manager-note {
+  margin-top: -10px;
+  color: #8490a3;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.messaging-login-page .forgot-password-link,
+.messaging-login-page .login-footer .link-btn {
+  color: #6d28d9;
+}
+
+.messaging-login-page .login-btn {
+  min-height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(110deg, #7c3aed, #6d5dfc 55%, #10b981);
+  box-shadow: 0 12px 24px rgba(109, 40, 217, 0.2);
+  font-size: 0.96rem;
+  letter-spacing: 0.01em;
+}
+
+.messaging-login-page .login-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px rgba(109, 40, 217, 0.26);
+}
+
+.messaging-login-page .login-footer {
+  color: #64748b;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 520px) {
+  .messaging-login-page .login-container {
+    padding: 36px 24px;
+    border-radius: 24px;
+  }
+}
+
+.messaging-login-page {
+  background:
+    radial-gradient(ellipse at 18% 14%, rgba(207, 157, 95, 0.32), transparent 32%),
+    radial-gradient(ellipse at 82% 86%, rgba(91, 67, 47, 0.22), transparent 34%),
+    repeating-linear-gradient(168deg, transparent 0 34px, rgba(74, 54, 38, 0.035) 35px 37px),
+    #b7a184;
+}
+
+.messaging-login-page::before,
+.messaging-login-page::after {
+  border-color: rgba(72, 52, 36, 0.16);
+}
+
+.messaging-login-page::before {
+  box-shadow:
+    0 0 0 34px rgba(72, 52, 36, 0.04),
+    0 0 0 72px rgba(72, 52, 36, 0.03);
+}
+
+.messaging-login-page::after {
+  border-color: rgba(72, 52, 36, 0.16);
+  box-shadow:
+    0 0 0 38px rgba(72, 52, 36, 0.04),
+    0 0 0 78px rgba(72, 52, 36, 0.03);
+}
+
+.messaging-login-page .login-container {
+  border: 3px solid #76583d;
+  border-radius: 18px 24px 17px 25px;
+  background:
+    radial-gradient(ellipse at 14% 12%, rgba(255, 250, 231, 0.94), transparent 46%),
+    repeating-linear-gradient(4deg, transparent 0 17px, rgba(101, 76, 48, 0.035) 18px 19px),
+    #e7d6b4;
+  box-shadow:
+    inset 0 0 0 5px rgba(108, 79, 50, 0.12),
+    0 24px 46px rgba(43, 32, 23, 0.35);
+  backdrop-filter: none;
+}
+
+.messaging-login-page .login-container::before {
+  height: 8px;
+  background: repeating-linear-gradient(
+    135deg,
+    #563b28 0 9px,
+    #a46e3f 9px 18px,
+    #d4ad70 18px 27px
+  );
+}
+
+.messaging-login-page .login-header::before {
+  border: 2px solid #80613e;
+  border-radius: 8px 12px 8px 12px;
+  background: #d8c095;
+  color: #573c28;
+  content: "CAVE-TO-CAVE CONNECTION";
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.1em;
+}
+
+.messaging-login-page .app-title {
+  background: none;
+  color: #493321;
+  font-family: Georgia, "Times New Roman", serif;
+  -webkit-text-fill-color: #493321;
+  letter-spacing: -0.045em;
+}
+
+.messaging-login-page .app-subtitle {
+  color: #72583d;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+}
+
+.messaging-login-page .form-group label {
+  color: #513b29;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.messaging-login-page .form-group input {
+  border: 2px solid #a88a61;
+  border-radius: 8px 13px 9px 12px;
+  background: rgba(255, 248, 228, 0.78);
+  box-shadow: inset 0 2px 5px rgba(68, 48, 29, 0.1);
+}
+
+.messaging-login-page .form-group input:focus {
+  border-color: #76502f;
+  background: #fff8e7;
+  box-shadow: 0 0 0 3px rgba(118, 80, 47, 0.16);
+}
+
+.messaging-login-page .remember-me {
+  color: #634d35;
+}
+
+.messaging-login-page .remember-me input {
+  accent-color: #785233;
+}
+
+.messaging-login-page .credential-manager-note {
+  color: #80694c;
+}
+
+.messaging-login-page .forgot-password-link,
+.messaging-login-page .login-footer .link-btn {
+  color: #754a2c;
+}
+
+.messaging-login-page .login-btn {
+  border: 2px solid #523822;
+  border-radius: 9px 14px 10px 13px;
+  background: linear-gradient(180deg, #9a7045, #6e4a2e);
+  box-shadow: 0 5px 0 #49301f, 0 10px 16px rgba(64, 43, 26, 0.2);
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.messaging-login-page .login-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 0 #49301f, 0 12px 18px rgba(64, 43, 26, 0.24);
+}
+
+.messaging-login-page .login-footer {
+  color: #72583d;
+}
+
+.messaging-login-page {
+  background:
+    radial-gradient(circle at 15% 78%, rgba(255, 255, 255, 0.9) 0 2px, transparent 3px) 0 0 / 18px 18px,
+    radial-gradient(circle at 86% 12%, rgba(255, 255, 255, 0.78) 0 2px, transparent 3px) 9px 9px / 18px 18px,
+    conic-gradient(from 18deg at 78% 52%, #5ec9f5, #a9e9ff, #56c5f3, #9ce4fa, #5ec9f5);
+}
+
+.messaging-login-page::before,
+.messaging-login-page::after {
+  border: 0;
+  background: repeating-conic-gradient(
+    from 8deg,
+    rgba(255, 226, 89, 0.62) 0deg 8deg,
+    transparent 8deg 17deg
+  );
+  box-shadow: none;
+  clip-path: circle(50%);
+}
+
+.messaging-login-page .login-container {
+  border: 4px solid #22213a;
+  border-radius: 34px 28px 36px 30px;
+  background:
+    radial-gradient(circle, rgba(255, 196, 0, 0.15) 0 2px, transparent 2.5px) 0 0 / 13px 13px,
+    #fff8dc;
+  box-shadow: 8px 10px 0 #22213a, 0 28px 60px rgba(26, 35, 65, 0.24);
+}
+
+.messaging-login-page .login-container::before {
+  background: repeating-linear-gradient(
+    135deg,
+    #ffcf32 0 18px,
+    #ff6b35 18px 36px,
+    #63d7f5 36px 54px,
+    #ae7bff 54px 72px
+  );
+}
+
+.messaging-login-page .login-header::before {
+  display: inline-flex;
+  margin-bottom: 16px;
+  padding: 7px 12px;
+  border: 3px solid #22213a;
+  border-radius: 999px 999px 999px 14px;
+  background: #ffdf57;
+  color: #22213a;
+  content: "HEY, YOU!";
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+  font-size: 0.7rem;
+  font-style: italic;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  box-shadow: 3px 3px 0 #22213a;
+  transform: rotate(-3deg);
+}
+
+.messaging-login-page .app-title {
+  background: none;
+  color: #282344;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+  font-weight: 900;
+  -webkit-text-fill-color: #282344;
+  text-shadow: 2px 2px 0 #ffcb37;
+}
+
+.messaging-login-page .app-subtitle,
+.messaging-login-page .form-group label {
+  color: #302b49;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+  font-weight: 700;
+}
+
+.messaging-login-page .form-group input {
+  border: 3px solid #302b49;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 3px 3px 0 rgba(48, 43, 73, 0.18);
+}
+
+.messaging-login-page .form-group input:focus {
+  border-color: #6250d7;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(98, 80, 215, 0.16), 3px 3px 0 rgba(48, 43, 73, 0.18);
+}
+
+.messaging-login-page .remember-me,
+.messaging-login-page .login-footer {
+  color: #514d67;
+}
+
+.messaging-login-page .remember-me input {
+  accent-color: #7656df;
+}
+
+.messaging-login-page .credential-manager-note {
+  color: #77718b;
+}
+
+.messaging-login-page .phone-country-note {
+  margin-top: -10px;
+  color: #77718b;
+  font-size: 0.76rem;
+}
+
+.messaging-login-page .forgot-password-link,
+.messaging-login-page .login-footer .link-btn {
+  color: #5d49cf;
+  font-weight: 750;
+}
+
+.messaging-login-page .login-btn {
+  border: 3px solid #22213a;
+  border-radius: 16px;
+  background: linear-gradient(100deg, #ff6848, #f44369);
+  box-shadow: 0 5px 0 #22213a;
+  font-family: "Trebuchet MS", "Arial Rounded MT Bold", sans-serif;
+  font-size: 1.02rem;
+  font-weight: 900;
+  letter-spacing: 0.045em;
+}
+
+.messaging-login-page .login-btn:hover:not(:disabled) {
+  transform: translateY(-2px) rotate(-0.5deg);
+  box-shadow: 0 7px 0 #22213a;
+}
+
+/* Final standalone sign-in theme overrides. */
+.messaging-login-page {
+  background:
+    radial-gradient(ellipse at 12% 14%, rgba(178, 157, 255, 0.2), transparent 34%),
+    radial-gradient(ellipse at 86% 84%, rgba(139, 226, 200, 0.18), transparent 36%),
+    #f7f7fb;
+}
+
+.messaging-login-page::before,
+.messaging-login-page::after {
+  border: 1px solid rgba(124, 91, 224, 0.1);
+  background: none;
+  border-radius: 50%;
+  clip-path: none;
+}
+
+.messaging-login-page::before {
+  top: -220px;
+  left: -180px;
+  width: 520px;
+  height: 520px;
+  box-shadow: 0 0 0 34px rgba(124, 91, 224, 0.025), 0 0 0 72px rgba(124, 91, 224, 0.02);
+}
+
+.messaging-login-page::after {
+  right: -190px;
+  bottom: -260px;
+  width: 600px;
+  height: 600px;
+  box-shadow: 0 0 0 38px rgba(16, 185, 129, 0.025), 0 0 0 78px rgba(16, 185, 129, 0.02);
+}
+
+.messaging-login-page .login-container {
+  max-width: 470px;
+  padding: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 32px 80px rgba(36, 35, 61, 0.12), 0 5px 18px rgba(124, 91, 224, 0.05);
+  backdrop-filter: blur(18px);
+}
+
+.messaging-login-page .login-container::before {
+  height: 4px;
+  background: linear-gradient(90deg, #8b70e8, #b8a5ff 52%, #76d5b3);
+}
+
+.messaging-login-page .login-header {
+  margin-bottom: 32px;
+}
+
+.messaging-login-page .login-header::before {
+  display: inline-flex;
+  margin-bottom: 18px;
+  padding: 7px 11px;
+  border: 1px solid rgba(124, 91, 224, 0.13);
+  border-radius: 999px;
+  background: #f5f2ff;
+  color: #674bc2;
+  content: none;
+  font-family: inherit;
+  font-size: 0.64rem;
+  font-style: normal;
+  font-weight: 750;
+  letter-spacing: 0.105em;
+  box-shadow: none;
+  transform: none;
+}
+
+.messaging-login-page .app-title {
+  margin-bottom: 9px;
+  background: linear-gradient(120deg, #29243e, #6356a7);
+  background-clip: text;
+  color: #29243e;
+  font-family: inherit;
+  font-size: clamp(2.2rem, 6vw, 2.7rem);
+  font-weight: 750;
+  letter-spacing: -0.065em;
+  text-shadow: none;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.messaging-login-page .app-title::before {
+  display: inline-flex;
+  width: 35px;
+  height: 35px;
+  align-items: center;
+  justify-content: center;
+  margin-right: 9px;
+  border-radius: 12px;
+  background: linear-gradient(140deg, #9177eb, #6f57ca);
+  color: #fff;
+  content: "✦";
+  font-size: 1.15rem;
+  vertical-align: 0.12em;
+  -webkit-text-fill-color: #fff;
+}
+
+.messaging-login-page .app-subtitle {
+  color: #77748a;
+  font-family: inherit;
+  font-size: 0.98rem;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.messaging-login-page .login-form {
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.messaging-login-page .form-group {
+  gap: 7px;
+}
+
+.messaging-login-page .form-group label {
+  color: #39364c;
+  font-family: inherit;
+  font-size: 0.87rem;
+  font-weight: 650;
+}
+
+.messaging-login-page .form-group input {
+  min-height: 50px;
+  padding: 13px 15px;
+  border: 1px solid #e6e4ee;
+  border-radius: 12px;
+  background: #fbfaff;
+  box-shadow: none;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.messaging-login-page .form-group input:focus {
+  border-color: #9882e7;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(124, 91, 224, 0.1);
+}
+
+.messaging-login-page .remember-me {
+  color: #555267;
+  font-size: 0.87rem;
+  font-weight: 500;
+}
+
+.messaging-login-page .remember-me input {
+  accent-color: #765bd4;
+}
+
+.messaging-login-page .credential-manager-note {
+  margin-top: -10px;
+  color: #89869a;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.messaging-login-page .phone-country-note {
+  margin-top: -10px;
+  color: #89869a;
+  font-size: 0.76rem;
+}
+
+.messaging-login-page .forgot-password-link,
+.messaging-login-page .login-footer .link-btn {
+  color: #6850c2;
+  font-weight: 650;
+}
+
+.messaging-login-page .login-btn {
+  min-height: 51px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(105deg, #7960d3, #684fc1);
+  box-shadow: 0 9px 20px rgba(104, 79, 193, 0.2);
+  font-family: inherit;
+  font-size: 0.96rem;
+  font-weight: 650;
+  letter-spacing: 0.005em;
+  text-shadow: none;
+}
+
+.messaging-login-page .login-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 23px rgba(104, 79, 193, 0.26);
+}
+
+.messaging-login-page .login-footer {
+  color: #77748a;
+  font-size: 0.88rem;
+  font-weight: 400;
 }

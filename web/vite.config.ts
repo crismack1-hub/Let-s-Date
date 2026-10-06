@@ -5,5 +5,13 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    allowedHosts: [".trycloudflare.com"],
+    proxy: {
+      "/api": "http://localhost:4000",
+      "/socket.io": {
+        target: "http://localhost:4000",
+        ws: true,
+      },
+    },
   },
 });

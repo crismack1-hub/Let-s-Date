@@ -2,6 +2,9 @@
 import type { SignUpData } from "../components/SignUpPage";
 import { apiUrl } from "../api";
 
+const AUTH_TOKEN_KEY = "authToken";
+const REMEMBERED_PHONE_KEY = "rememberedPhone";
+
 export interface AuthUser {
   id: string;
   phone: string;
@@ -17,7 +20,7 @@ export function useAuth() {
 
   useEffect(() => {
     // Check if token exists in localStorage
-    const storedToken = localStorage.getItem("authToken");
+    const storedToken = localStorage.getItem(AUTH_TOKEN_KEY) ?? sessionStorage.getItem(AUTH_TOKEN_KEY);
     if (storedToken) {
       setToken(storedToken);
       // Verify token with backend
@@ -36,19 +39,21 @@ export function useAuth() {
         const userData = await response.json();
         setUser(userData);
       } else {
-        localStorage.removeItem("authToken");
+        localStorage.removeItem(AUTH_TOKEN_KEY);
+        sessionStorage.removeItem(AUTH_TOKEN_KEY);
         setToken(null);
       }
     } catch (error) {
       console.error("Token verification failed:", error);
-      localStorage.removeItem("authToken");
+      localStorage.removeItem(AUTH_TOKEN_KEY);
+      sessionStorage.removeItem(AUTH_TOKEN_KEY);
       setToken(null);
     } finally {
       setLoading(false);
     }
   };
 
-  const login = async (phone: string, password: string) => {
+  const login = async (phone: string, password: string, rememberMe: boolean) => {
     try {
       const response = await fetch(apiUrl("/api/auth/login"), {
         method: "POST",
@@ -59,12 +64,54 @@ export function useAuth() {
       if (response.ok) {
         setToken(data.token);
         setUser(data.user);
-        localStorage.setItem("authToken", data.token);
+        if (rememberMe) {
+          localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+          localStorage.setItem(REMEMBERED_PHONE_KEY, phone);
+          sessionStorage.removeItem(AUTH_TOKEN_KEY);
+        } else {
+          localStorage.removeItem(AUTH_TOKEN_KEY);
+          localStorage.removeItem(REMEMBERED_PHONE_KEY);
+          sessionStorage.setItem(AUTH_TOKEN_KEY, data.token);
+        }
         return { success: true };
       }
       return { success: false, error: data.error || "Login failed" };
     } catch (error) {
       console.error("Login request failed:", error);
+      return { success: false, error: "Unable to connect to auth server" };
+    }
+  };
+
+  const requestPasswordReset = async (phone: string) => {
+    try {
+      const response = await fetch(apiUrl("/api/auth/password-reset/request"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        return { success: true, developmentCode: data.developmentCode as string | undefined };
+      }
+      return { success: false, error: data.error || "Unable to request a password reset" };
+    } catch (error) {
+      console.error("Password reset request failed:", error);
+      return { success: false, error: "Unable to connect to auth server" };
+    }
+  };
+
+  const resetPassword = async (phone: string, code: string, password: string) => {
+    try {
+      const response = await fetch(apiUrl("/api/auth/password-reset/confirm"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, code, password }),
+      });
+      const data = await response.json();
+      if (response.ok) return { success: true };
+      return { success: false, error: data.error || "Unable to reset password" };
+    } catch (error) {
+      console.error("Password reset confirmation failed:", error);
       return { success: false, error: "Unable to connect to auth server" };
     }
   };
@@ -102,7 +149,8 @@ export function useAuth() {
 
         setToken(data.token);
         setUser(data.user);
-        localStorage.setItem("authToken", data.token);
+        localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+        sessionStorage.removeItem(AUTH_TOKEN_KEY);
         return { success: true };
       }
       return { success: false, error: data.error || "Sign up failed" };
@@ -115,8 +163,19 @@ export function useAuth() {
   const logout = () => {
     setToken(null);
     setUser(null);
-    localStorage.removeItem("authToken");
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    sessionStorage.removeItem(AUTH_TOKEN_KEY);
   };
 
-  return { user, token, loading, login, logout, signUp };
+  return {
+    user,
+    token,
+    loading,
+    login,
+    logout,
+    signUp,
+    requestPasswordReset,
+    resetPassword,
+    rememberedPhone: localStorage.getItem(REMEMBERED_PHONE_KEY) ?? "",
+  };
 }

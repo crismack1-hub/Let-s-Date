@@ -8,6 +8,7 @@ import type { SignUpData } from "./components/SignUpPage";
 import { Navbar } from "./components/Navbar";
 import { DiscoverPage } from "./components/DiscoverPage";
 import { MatchesPage } from "./components/MatchesPage";
+import { FriendsPage } from "./components/FriendsPage";
 import { LikesPage } from "./components/LikesPage";
 import { ChatPage } from "./components/ChatPage";
 import { ProfilePage } from "./components/ProfilePage";
@@ -27,10 +28,24 @@ import { PageInfoPage, type PageInfoId } from "./components/PageInfoPage";
 import "./App.css";
 
 function App() {
-  const { user, token, loading, login, logout, signUp } = useAuth();
+  const isStandaloneMessages =
+    typeof window !== "undefined" && window.location.pathname === "/messages";
+  const {
+    user,
+    token,
+    loading,
+    login,
+    logout,
+    signUp,
+    requestPasswordReset,
+    resetPassword,
+    rememberedPhone,
+  } = useAuth();
   const { socket, connected } = useSocket(token);
   const authToken = token ?? "";
-  const [currentPage, setCurrentPage] = useState("discover");
+  const [currentPage, setCurrentPage] = useState(() =>
+    isStandaloneMessages ? "chat" : "discover"
+  );
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadLikes, setUnreadLikes] = useState(0);
@@ -120,8 +135,8 @@ function App() {
     }
   };
 
-  const handleLogin = async (phone: string, password: string) => {
-    return await login(phone, password);
+  const handleLogin = async (phone: string, password: string, rememberMe: boolean) => {
+    return await login(phone, password, rememberMe);
   };
 
   const handleSignUp = async (data: SignUpData) => {
@@ -156,8 +171,12 @@ function App() {
       <LoginPage
         onLogin={handleLogin}
         onSignUp={handleSignUp}
+        onRequestPasswordReset={requestPasswordReset}
+        onResetPassword={resetPassword}
         onViewFeature={handleViewFeature}
         isLoading={false}
+        rememberedPhone={rememberedPhone}
+        messagingOnly={isStandaloneMessages}
       />
     );
   }
@@ -168,6 +187,8 @@ function App() {
         return <DiscoverPage token={authToken} />;
       case "matches":
         return <MatchesPage token={authToken} onMessage={openChatWith} />;
+      case "friends":
+        return <FriendsPage token={authToken} onMessage={openChatWith} />;
       case "likes":
         return <LikesPage token={authToken} />;
       case "chat":
@@ -177,6 +198,7 @@ function App() {
             socket={socket}
             currentUserId={userProfile?.id}
             onNavigate={setCurrentPage}
+            onLogout={isStandaloneMessages ? handleLogout : undefined}
             chatTarget={chatTarget}
             onChatTargetConsumed={() => setChatTarget(null)}
           />
@@ -271,6 +293,14 @@ function App() {
         return <DiscoverPage token={authToken} />;
     }
   };
+
+  if (isStandaloneMessages) {
+    return (
+      <div className="standalone-messages-app">
+        <main className="standalone-messages-content">{renderPage()}</main>
+      </div>
+    );
+  }
 
   return (
     <div className="app">

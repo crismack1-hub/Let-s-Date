@@ -13,16 +13,35 @@ export function createApp() {
     .split(",")
     .map((value) => value.trim())
     .filter(Boolean);
+  const isAllowedOrigin = (origin: string | undefined) => {
+    if (!origin || allowedOrigins.includes(origin)) return true;
+    if (process.env.NODE_ENV === "production") return false;
+
+    try {
+      return new URL(origin).hostname.endsWith(".trycloudflare.com");
+    } catch {
+      return false;
+    }
+  };
 
   const io = new Server(server, {
     cors: {
-      origin: allowedOrigins,
+      origin: (origin, callback) => {
+        callback(null, isAllowedOrigin(origin) ? origin || true : false);
+      },
       methods: ["GET", "POST"],
       credentials: true,
     },
   });
 
-  app.use(cors({ origin: allowedOrigins, credentials: true }));
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        callback(null, isAllowedOrigin(origin) ? origin || true : false);
+      },
+      credentials: true,
+    }),
+  );
   app.use(express.json({ limit: "10mb" }));
 
   app.use("/api/auth", authRouter);

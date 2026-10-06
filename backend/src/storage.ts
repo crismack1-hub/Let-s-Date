@@ -44,6 +44,8 @@ const messages: Message[] = [];
 const groups = new Map<string, Group>();
 const statuses: Status[] = [];
 
+const normalizePhone = (phone: string) => phone.replace(/\D/g, "");
+
 export const storage = {
   async createUser(phone: string, name: string, password: string, publicKey: string) {
     const id = randomUUID();
@@ -61,7 +63,10 @@ export const storage = {
     return user;
   },
   async verifyCredentials(phone: string, password: string) {
-    const user = Array.from(users.values()).find((item) => item.phone === phone);
+    const normalizedPhone = normalizePhone(phone);
+    const user = Array.from(users.values()).find(
+      (item) => normalizePhone(item.phone) === normalizedPhone,
+    );
     if (!user) return null;
     const match = await bcrypt.compare(password, user.passwordHash);
     return match ? user : null;
@@ -70,7 +75,10 @@ export const storage = {
     return users.get(id) ?? null;
   },
   findUserByPhone(phone: string) {
-    return Array.from(users.values()).find((item) => item.phone === phone) ?? null;
+    const normalizedPhone = normalizePhone(phone);
+    return Array.from(users.values()).find(
+      (item) => normalizePhone(item.phone) === normalizedPhone,
+    ) ?? null;
   },
   addMessage(message: Message) {
     messages.push(message);

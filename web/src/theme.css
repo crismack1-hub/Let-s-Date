@@ -1,0 +1,195 @@
+:root {
+  --primary-color: #765bd4;
+  --primary-dark: #5e46ba;
+  --secondary-color: #63c9aa;
+  --background-light: #f7f7fb;
+  --background-gradient: #f7f7fb;
+  --background-white: #ffffff;
+  --surface: #ffffff;
+  --surface-muted: #f3f1fa;
+  --text-dark: #29243e;
+  --text-muted: #77748a;
+  --text-light: #89869a;
+  --border-color: #e8e5f0;
+  --border-strong: #d3cde3;
+  --shadow-xs: 0 1px 2px rgba(41, 36, 62, 0.04);
+  --shadow: 0 1px 2px rgba(41, 36, 62, 0.04), 0 5px 16px rgba(82, 67, 135, 0.07);
+  --shadow-lg: 0 2px 8px rgba(41, 36, 62, 0.05), 0 18px 42px rgba(82, 67, 135, 0.12);
+  color-scheme: light;
+}
+
+body,
+.app {
+  background: var(--background-gradient);
+  color: var(--text-dark);
+}
+
+a,
+.link-btn,
+.chat-plan-link,
+.feature-secondary-link,
+.feature-quick-link,
+.filter-topic-link {
+  color: var(--primary-color);
+}
+
+.navbar {
+  border-color: var(--border-color);
+}
+
+.nav-link.active,
+.matches-tab.active,
+.friends-tabs button.active,
+.feature-tab.active,
+.filter-radio.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
+.nav-link.active:hover,
+.matches-tab.active:hover,
+.friends-tabs button.active:hover,
+.feature-tab.active:hover {
+  background: var(--primary-dark);
+  color: #fff;
+}
+
+.plan-pill-upgrade,
+.plan-pill-premium,
+.feature-primary-btn,
+.feature-action-btn-primary,
+.conversations-launcher-primary,
+.login-btn,
+.signup-btn,
+.btn-like-back,
+.btn-message,
+.btn-like,
+.action-btn.like,
+.edit-btn,
+.save-btn,
+.settings-btn-primary,
+.tier-btn-primary,
+.friends-empty button,
+.friend-card-actions button:not(.friend-remove-button) {
+  background: linear-gradient(110deg, var(--primary-color), var(--primary-dark));
+  border-color: var(--primary-color);
+  color: #fff;
+}
+
+.plan-pill-upgrade:hover,
+.plan-pill-premium:hover,
+.feature-primary-btn:hover,
+.feature-action-btn-primary:hover,
+.conversations-launcher-primary:hover,
+.login-btn:hover:not(:disabled),
+.signup-btn:hover:not(:disabled),
+.btn-like-back:hover,
+.btn-message:hover,
+.btn-like:hover,
+.action-btn.like:hover,
+.edit-btn:hover,
+.save-btn:hover,
+.settings-btn-primary:hover,
+.tier-btn-primary:hover,
+.friends-empty button:hover,
+.friend-card-actions button:not(.friend-remove-button):hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.feature-secondary-btn,
+.feature-tab,
+.feature-quick-link,
+.feature-section-link,
+.feature-action-btn-secondary,
+.settings-tab.active,
+.tier-btn-secondary,
+.friends-invite-link {
+  border-color: rgba(118, 91, 212, 0.38);
+  color: var(--primary-color);
+}
+
+.feature-secondary-btn:hover,
+.feature-tab:hover,
+.feature-quick-link:hover,
+.feature-action-btn-secondary:hover,
+.settings-tab.active:hover,
+.friends-invite-link:hover {
+  background: #f1edfc;
+}
+
+.settings-tab.active {
+  background: #f1edfc;
+}
+
+.tier-check-premium {
+  background: var(--primary-color);
+}
+
+.action-btn.view,
+.action-btn.view:hover {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: #fff;
+}
+
+.action-btn.pass:hover {
+  background: #f1edfc;
+  border-color: #d3cde3;
+  color: var(--primary-dark);
+}
+
+.btn-favorite.favorited,
+.settings-pill-active {
+  background: #f1edfc;
+  border-color: rgba(118, 91, 212, 0.38);
+  color: var(--primary-dark);
+}
+
+.nav-link .badge,
+.matches-tab.active .matches-tab-count,
+.friends-tabs button.active span {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.standalone-messages-app {
+  background:
+    radial-gradient(ellipse at 12% 0%, rgba(178, 157, 255, 0.13), transparent 36%),
+    radial-gradient(ellipse at 100% 100%, rgba(139, 226, 200, 0.12), transparent 34%),
+    var(--background-light);
+}
+
+.chat-page {
+  --wa-accent: var(--primary-color);
+  --wa-accent-dark: var(--primary-dark);
+}
+
+.chat-page .message-input-container button {
+  background-color: var(--primary-color);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M2.01 21L23 12 2.01 3 2 10l15 2-15 2z'/%3E%3C/svg%3E");
+}
+
+.standalone-messages-content .chat-sidebar-footer button:hover {
+  border-color: rgba(118, 91, 212, 0.3);
+  color: var(--primary-dark);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(118, 91, 212, 0.12);
+}
+
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"] {
+  accent-color: var(--primary-color);
+}
+
+::selection {
+  background: rgba(118, 91, 212, 0.2);
+  color: var(--text-dark);
+}

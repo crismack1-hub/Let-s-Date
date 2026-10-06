@@ -25,11 +25,12 @@ router.post("/register", async (req, res) => {
 
   const token = jwt.sign({ userId: user.id }, jwtSecret, { expiresIn: "30d" });
 
-  return res.json({ token, user: { id: user.id, phone: user.phone, name: user.name, publicKey } , privateKey });
+  return res.json({ token, user: { id: user.id, phone: user.phone, name: user.name, publicKey }, privateKey });
 });
 
 router.post("/login", async (req, res) => {
-  const { phone, password } = req.body;
+  const { phone } = req.body;
+  const { password } = req.body;
   if (!phone || !password) {
     return res.status(400).json({ error: "phone and password are required" });
   }
@@ -41,6 +42,20 @@ router.post("/login", async (req, res) => {
 
   const token = jwt.sign({ userId: user.id }, jwtSecret, { expiresIn: "30d" });
   return res.json({ token, user: { id: user.id, phone: user.phone, name: user.name, publicKey: user.publicKey } });
+});
+
+router.get("/verify", (req, res) => {
+  const token = (req.header("authorization") || "").replace(/^Bearer\s+/i, "");
+  if (!token) return res.status(401).json({ error: "missing token" });
+
+  try {
+    const payload = jwt.verify(token, jwtSecret) as { userId: string };
+    const user = storage.findUserById(payload.userId);
+    if (!user) return res.status(401).json({ error: "invalid token" });
+    return res.json({ id: user.id, phone: user.phone, name: user.name });
+  } catch {
+    return res.status(401).json({ error: "invalid token" });
+  }
 });
 
 export { router as authRouter };

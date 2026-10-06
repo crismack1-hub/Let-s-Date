@@ -6,6 +6,7 @@ const socketIo = require('socket.io');
 const cors = require('cors');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { v4: uuidv4 } = require('uuid');
+const { randomInt } = require('crypto');
 
 const app = express();
 const server = http.createServer(app);
@@ -32,20 +33,28 @@ app.get(['/legacy', '/legacy/'], (_req, res) => {
 // Proxy everything that isn't an API route, socket.io traffic, or /legacy
 // to the Vite dev server so the React web app is the main entry portal.
 const VITE_TARGET = process.env.VITE_TARGET || 'http://localhost:5173';
+const shouldProxyToVite = (pathname) =>
+  !pathname.startsWith('/api') &&
+  !pathname.startsWith('/socket.io') &&
+  !pathname.startsWith('/legacy');
 const viteProxy = createProxyMiddleware({
   target: VITE_TARGET,
   changeOrigin: true,
   ws: true, // Vite HMR uses websockets
-  pathFilter: (pathname) =>
-    !pathname.startsWith('/api') &&
-    !pathname.startsWith('/socket.io') &&
-    !pathname.startsWith('/legacy'),
 });
-app.use(viteProxy);
+app.use((req, res, next) => {
+  if (!req.path || shouldProxyToVite(req.path)) {
+    return viteProxy(req, res, next);
+  }
+  return next();
+});
 server.on('upgrade', (req, socket, head) => {
   // Forward Vite HMR websocket upgrades, but leave socket.io upgrades for Socket.IO.
-  if (req.url && !req.url.startsWith('/socket.io')) {
-    viteProxy.upgrade(req, socket, head);
+  if (req.url) {
+    const pathname = new URL(req.url, 'http://localhost').pathname;
+    if (shouldProxyToVite(pathname)) {
+      viteProxy.upgrade(req, socket, head);
+    }
   }
 });
 
@@ -210,6 +219,7 @@ const sampleProfiles = [
 // Auth storage
 const authUsers = {};
 const authTokens = {};
+const passwordResetCodes = {};
 
 function createDefaultProfile(id, phone, name) {
   return {
@@ -584,6 +594,61 @@ app.post('/api/auth/login', (req, res) => {
 
   const token = createToken(user.id);
   return res.json({ token, user: { id: user.id, phone: user.phone, name: user.name, avatar: user.avatar } });
+});
+
+app.post('/api/auth/password-reset/request', (req, res) => {
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(503).json({ error: 'Password recovery is unavailable until SMS delivery is configured.' });
+  }
+
+  const { phone } = req.body;
+  if (typeof phone !== 'string' || !phone.trim()) {
+    return res.status(400).json({ error: 'Phone number is required' });
+  }
+
+  const user = findAuthUserByPhone(phone.trim());
+  const response = { message: 'If an account exists for that number, a verification code has been created.' };
+  if (user) {
+    const code = String(randomInt(100000, 1000000));
+    passwordResetCodes[user.id] = {
+      code,
+      expiresAt: Date.now() + 10 * 60 * 1000,
+      attempts: 0,
+    };
+    response.developmentCode = code;
+  }
+  return res.json(response);
+});
+
+app.post('/api/auth/password-reset/confirm', (req, res) => {
+  const { phone, code, password } = req.body;
+  if (typeof phone !== 'string' || !phone.trim() || typeof code !== 'string' || !code.trim()) {
+    return res.status(400).json({ error: 'Phone number and verification code are required' });
+  }
+  if (typeof password !== 'string' || password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
+
+  const user = findAuthUserByPhone(phone.trim());
+  const reset = user && passwordResetCodes[user.id];
+  if (!reset || reset.expiresAt <= Date.now()) {
+    if (user && reset) delete passwordResetCodes[user.id];
+    return res.status(400).json({ error: 'The verification code is invalid or expired. Request a new code.' });
+  }
+  if (reset.attempts >= 5) {
+    return res.status(429).json({ error: 'Too many incorrect codes. Request a new code.' });
+  }
+  if (reset.code !== code.trim()) {
+    reset.attempts += 1;
+    return res.status(400).json({ error: 'The verification code is invalid or expired. Request a new code.' });
+  }
+
+  user.password = password;
+  delete passwordResetCodes[user.id];
+  for (const [token, userId] of Object.entries(authTokens)) {
+    if (userId === user.id) delete authTokens[token];
+  }
+  return res.json({ success: true });
 });
 
 app.all('/api/auth/verify', (req, res, next) => {

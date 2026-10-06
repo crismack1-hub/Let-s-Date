@@ -7,6 +7,7 @@ This workspace contains a full-stack messaging platform scaffold for web + mobil
 - `backend/`: Node.js API, auth, realtime chat, media, encryption key management, admin tools.
 - `web/`: React + TypeScript web client with chat, groups, media, presence, statuses.
 - `mobile/`: Expo React Native mobile app targeting iOS/Android with shared UI and realtime messaging.
+- Open `/messages` in the web client for a messaging-only experience without the dating navigation.
 
 ## Features
 
@@ -30,6 +31,10 @@ This workspace contains a full-stack messaging platform scaffold for web + mobil
 ## Notes
 
 This repository is a scaffold for the full application. The backend exposes REST APIs and Socket.IO events. The web and mobile clients connect to the same realtime backend.
+
+### Password recovery
+
+The web login includes a development-only phone OTP password reset flow. When running outside production, the OTP is shown in the browser because no SMS provider is configured. Password reset requests return `503` in production until SMS delivery is integrated; do not enable the development OTP flow for a public deployment.
 
 ## Next steps
 

@@ -453,6 +453,7 @@ const profiles: SeededProfile[] = [
 
 const likes = new Map<string, Set<string>>();
 const favorites = new Map<string, Set<string>>();
+const friends = new Map<string, Set<string>>();
 const profileOverrides = new Map<string, Record<string, unknown>>();
 
 function parseMatchId(matchId: string): string {
@@ -487,7 +488,7 @@ function defaultProfile(userId: string) {
     name: "You",
     age: 28,
     bio: "Tell people about yourself.",
-    photos: [portrait("men", 5)],
+    photos: [],
     location: "Set your location in Settings",
     interests: [],
     verified: false,
@@ -622,6 +623,27 @@ router.delete("/matches/:id", (req: AuthedRequest, res) => {
   const targetUserId = parseMatchId(req.params.id);
   likes.get(req.userId!)?.delete(targetUserId);
   favorites.get(req.userId!)?.delete(targetUserId);
+  res.json({ ok: true });
+});
+
+router.get("/friends", (req: AuthedRequest, res) => {
+  const friendIds = friends.get(req.userId!) ?? new Set<string>();
+  res.json(profiles.filter((profile) => friendIds.has(profile.id)));
+});
+
+router.post("/friends/:id", (req: AuthedRequest, res) => {
+  const friendId = req.params.id;
+  if (friendId === req.userId || !profiles.some((profile) => profile.id === friendId)) {
+    return res.status(404).json({ error: "Profile not found" });
+  }
+
+  if (!friends.has(req.userId!)) friends.set(req.userId!, new Set<string>());
+  friends.get(req.userId!)!.add(friendId);
+  return res.json({ ok: true, friendId });
+});
+
+router.delete("/friends/:id", (req: AuthedRequest, res) => {
+  friends.get(req.userId!)?.delete(req.params.id);
   res.json({ ok: true });
 });
 

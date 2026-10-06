@@ -1,5 +1,41 @@
 import { useState } from "react";
 import "../styles/SignUpPage.css";
+import { normalizePhoneNumber } from "../utils/phone";
+import { PhoneNumberInput } from "./PhoneNumberInput";
+
+function secureRandomIndex(max: number) {
+  const range = 0x1_0000_0000;
+  const limit = range - (range % max);
+  const value = new Uint32Array(1);
+  do {
+    window.crypto.getRandomValues(value);
+  } while (value[0] >= limit);
+  return value[0] % max;
+}
+
+function generatePasswordSuggestion() {
+  const characterSets = [
+    "ABCDEFGHJKLMNPQRSTUVWXYZ",
+    "abcdefghijkmnopqrstuvwxyz",
+    "23456789",
+    "!@#$%&*+-=?",
+  ];
+  const characters = characterSets.map(
+    (set) => set[secureRandomIndex(set.length)],
+  );
+  const allCharacters = characterSets.join("");
+
+  while (characters.length < 18) {
+    characters.push(allCharacters[secureRandomIndex(allCharacters.length)]);
+  }
+
+  for (let index = characters.length - 1; index > 0; index -= 1) {
+    const swapIndex = secureRandomIndex(index + 1);
+    [characters[index], characters[swapIndex]] = [characters[swapIndex], characters[index]];
+  }
+
+  return characters.join("");
+}
 
 interface SignUpPageProps {
   onSignUp: (data: SignUpData) => Promise<{ success: boolean; error?: string }>;
@@ -31,6 +67,7 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
   });
   const [error, setError] = useState("");
   const [step, setStep] = useState(1); // Multi-step form
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -63,8 +100,8 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
   };
 
   const validateStep2 = () => {
-    if (!formData.phone.trim()) {
-      setError("Phone number is required");
+    if (!normalizePhoneNumber(formData.phone)) {
+      setError("Enter a valid phone number. Start with + and the country code if needed.");
       return false;
     }
     if (!formData.email.trim()) {
@@ -101,9 +138,27 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
     e.preventDefault();
     if (!validateStep2()) return;
 
-    const result = await onSignUp(formData);
+    const normalizedPhone = normalizePhoneNumber(formData.phone);
+    if (!normalizedPhone) {
+      setError("Enter a valid phone number. Start with + and the country code if needed.");
+      return;
+    }
+
+    const result = await onSignUp({ ...formData, phone: normalizedPhone });
     if (!result.success) {
       setError(result.error || "Sign up failed");
+    }
+  };
+
+  const handleSuggestPassword = () => {
+    try {
+      const password = generatePasswordSuggestion();
+      setFormData((prev) => ({ ...prev, password, confirmPassword: password }));
+      setShowPassword(true);
+      setError("");
+    } catch (suggestionError) {
+      console.error("Secure password generation failed:", suggestionError);
+      setError("Unable to generate a secure password in this browser.");
     }
   };
 
@@ -111,7 +166,9 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
     <div className="signup-page">
       <div className="signup-container">
         <div className="signup-header">
-          <h1 className="app-title">💬 Let's Chat</h1>
+          <h1 className="app-title">
+            <a className="app-home-link" href="/" aria-label="Let's Chat home">💬 Let's Chat</a>
+          </h1>
           <p className="app-subtitle">Join millions finding love</p>
         </div>
 
@@ -190,13 +247,13 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
 
             <div className="form-group">
               <label htmlFor="phone">Phone Number</label>
-              <input
+              <PhoneNumberInput
                 id="phone"
-                type="tel"
                 name="phone"
+                autoComplete="tel"
                 placeholder="Enter your phone number"
                 value={formData.phone}
-                onChange={handleChange}
+                onChange={(phone) => setFormData((previous) => ({ ...previous, phone }))}
                 disabled={isLoading}
               />
             </div>
@@ -205,27 +262,46 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
               <label htmlFor="password">Password</label>
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
+                autoComplete="new-password"
                 placeholder="Create a password"
                 value={formData.password}
                 onChange={handleChange}
                 disabled={isLoading}
               />
+              <button
+                type="button"
+                className="link-btn suggest-password-btn"
+                onClick={handleSuggestPassword}
+                disabled={isLoading}
+              >
+                Suggest a strong password
+              </button>
             </div>
 
             <div className="form-group">
               <label htmlFor="confirmPassword">Confirm Password</label>
               <input
                 id="confirmPassword"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="confirmPassword"
+                autoComplete="new-password"
                 placeholder="Confirm your password"
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 disabled={isLoading}
               />
             </div>
+            <label className="show-password-toggle">
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={(event) => setShowPassword(event.target.checked)}
+                disabled={isLoading}
+              />
+              Show password
+            </label>
 
             {error && <div className="error-message">{error}</div>}
 

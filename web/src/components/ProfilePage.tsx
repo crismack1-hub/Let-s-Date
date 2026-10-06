@@ -195,6 +195,9 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
             )}
           </div>
           <div className="photos-grid">
+            {photos.length === 0 && !isEditing && (
+              <div className="photo-empty">No profile photo yet</div>
+            )}
             {photos.map((photo, index) => (
               <div key={index} className="photo-item">
                 <img src={photo} alt={`Photo ${index + 1}`} />

@@ -1,15 +1,15 @@
 /* Global Styles */
 :root {
-  --primary-color: #ff5a6e;
-  --primary-dark: #ef3a52;
-  --secondary-color: #4ecdc4;
-  --background-light: #fafbfc;
+  --primary-color: #765bd4;
+  --primary-dark: #5e46ba;
+  --secondary-color: #63c9aa;
+  --background-light: #f7f7fb;
   --background-white: #ffffff;
-  --text-dark: #14142b;
-  --text-light: #6b7280;
-  --border-color: #ececf2;
-  --shadow: 0 1px 2px rgba(20, 20, 43, 0.04), 0 4px 12px rgba(20, 20, 43, 0.06);
-  --shadow-lg: 0 1px 2px rgba(20, 20, 43, 0.04), 0 16px 32px rgba(20, 20, 43, 0.1);
+  --text-dark: #29243e;
+  --text-light: #89869a;
+  --border-color: #e8e5f0;
+  --shadow: 0 1px 2px rgba(41, 36, 62, 0.04), 0 5px 16px rgba(82, 67, 135, 0.07);
+  --shadow-lg: 0 2px 8px rgba(41, 36, 62, 0.05), 0 18px 42px rgba(82, 67, 135, 0.12);
   --radius: 10px;
   --radius-lg: 16px;
   color-scheme: light;

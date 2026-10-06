@@ -11,13 +11,14 @@ interface ChatPageProps {
   socket: any;
   currentUserId?: string;
   onNavigate?: (page: string) => void;
+  onLogout?: () => void;
   chatTarget?: string | null;
   onChatTargetConsumed?: () => void;
 }
 
 const CROSS_PLATFORM = "cross-platform";
 
-export function ChatPage({ token, socket, currentUserId, onNavigate, chatTarget, onChatTargetConsumed }: ChatPageProps) {
+export function ChatPage({ token, socket, currentUserId, onNavigate, onLogout, chatTarget, onChatTargetConsumed }: ChatPageProps) {
   const { isPremium, canSendMessage, recordMessage, messagesLeftToday } = useSubscription();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<string | null>(CROSS_PLATFORM);
@@ -28,6 +29,7 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, chatTarget,
   const [mobileAppOnline, setMobileAppOnline] = useState(false);
   const [callType, setCallType] = useState<CallType | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [showMobileConversationList, setShowMobileConversationList] = useState(true);
   const [voiceError, setVoiceError] = useState<string | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -104,6 +106,7 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, chatTarget,
 
   const selectConversation = async (userId: string) => {
     setSelectedConversation(userId);
+    setShowMobileConversationList(false);
 
     if (userId === CROSS_PLATFORM) return; // socket-driven
 
@@ -225,7 +228,7 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, chatTarget,
     selectedConversation === CROSS_PLATFORM ? undefined : activeConv?.userPhoto;
 
   return (
-    <div className="chat-page">
+    <div className={`chat-page ${showMobileConversationList ? "mobile-showing-list" : "mobile-showing-thread"}`}>
       <div className="chat-sidebar">
         <div className="search-box">
           <input
@@ -251,11 +254,11 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, chatTarget,
 
             <div className="conv-content">
               <div className="conv-header">
-                <h4>Mobile app</h4>
-                <span className="time">{mobileAppOnline ? "● Connected" : "Cross-platform"}</span>
+                <h4>Shared test room</h4>
+                <span className="time">{mobileAppOnline ? "● People online" : "Waiting for friends"}</span>
               </div>
               <p className="last-message">
-                Live chat with the Let's Date mobile app
+                Everyone connected can see messages here
               </p>
             </div>
           </div>
@@ -297,15 +300,28 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, chatTarget,
             ))
           )}
         </div>
+        {onLogout && (
+          <div className="chat-sidebar-footer">
+            <button type="button" onClick={onLogout}>Log out</button>
+          </div>
+        )}
       </div>
 
       <div className="chat-main">
         {selectedConversation && (
           <>
             <div className="chat-header">
+              <button
+                type="button"
+                className="chat-mobile-back"
+                onClick={() => setShowMobileConversationList(true)}
+                aria-label="Back to conversations"
+              >
+                ←
+              </button>
               <h2>
                 {selectedConversation === CROSS_PLATFORM
-                  ? "📱 Mobile app"
+                  ? "Shared test chat"
                   : conversations.find((c) => c.userId === selectedConversation)?.userName}
               </h2>
               <div className="chat-header-actions">
@@ -331,8 +347,8 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, chatTarget,
               <span className="chat-header-status">
                 {selectedConversation === CROSS_PLATFORM
                   ? mobileAppOnline
-                    ? "● Connected to mobile app"
-                    : "Waiting for the mobile app to send a message"
+                    ? "● Friends are connected · visible to everyone in this room"
+                    : "Waiting for a friend · messages are visible to everyone here"
                   : conversations.find((c) => c.userId === selectedConversation)?.online
                     ? "● Online now"
                     : "Offline"}

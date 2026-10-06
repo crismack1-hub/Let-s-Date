@@ -62,6 +62,16 @@
   gap: 12px;
 }
 
+.photo-empty {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  border: 1px dashed #d4d8e0;
+  border-radius: 10px;
+  color: #6b7280;
+  background: #f8f9fb;
+}
+
 .photos-section-head {
   display: flex;
   justify-content: space-between;
