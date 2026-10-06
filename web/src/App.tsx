@@ -157,6 +157,9 @@ function App() {
     logout();
     setCurrentPage("discover");
     setUserProfile(null);
+    if (typeof window !== "undefined") {
+      window.history.replaceState({}, "", "/");
+    }
   };
 
   const handleViewFeature = (page: string) => {
