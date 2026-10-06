@@ -140,7 +140,11 @@ function App() {
   };
 
   const handleSignUp = async (data: SignUpData) => {
-    return await signUp(data);
+    const result = await signUp(data);
+    if (result.success && isStandaloneMessages) {
+      window.location.assign("/");
+    }
+    return result;
   };
 
   const handleLogout = () => {
