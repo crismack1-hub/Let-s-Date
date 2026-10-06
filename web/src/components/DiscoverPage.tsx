@@ -83,7 +83,11 @@ export function DiscoverPage({ token }: DiscoverPageProps) {
   }
 
   if (users.length === 0) {
-    return <div className="discover-page"><p>No more profiles to discover</p></div>;
+    return (
+      <div className="discover-page">
+        <p>No real profiles with photos yet. Invite a friend to join and add a profile photo.</p>
+      </div>
+    );
   }
 
   const currentUser = users[currentIndex];

@@ -80,6 +80,9 @@ export const storage = {
       (item) => normalizePhone(item.phone) === normalizedPhone,
     ) ?? null;
   },
+  listUsers() {
+    return Array.from(users.values(), ({ id, name }) => ({ id, name }));
+  },
   addMessage(message: Message) {
     messages.push(message);
     return message;

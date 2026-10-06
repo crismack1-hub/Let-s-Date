@@ -208,7 +208,7 @@ export function SmartDiscoveryPage({ token }: SmartDiscoveryPageProps) {
           <p>Loading profiles…</p>
         ) : !filteredUsers.length ? (
           <div className="feature-empty">
-            <p>No profiles match your filters yet. Try widening the search.</p>
+            <p>No members with profile photos match your filters yet. Invite friends to join or widen your filters.</p>
           </div>
         ) : (
           <DiscoverCard
