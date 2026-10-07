@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { SignUpPage, SignUpData } from "./SignUpPage";
-import { defaultQuickNavLinks, QuickNav } from "./QuickNav";
 import { PhoneNumberInput } from "./PhoneNumberInput";
 import { normalizePhoneNumber } from "../utils/phone";
 import "../styles/LoginPage.css";
@@ -24,22 +23,6 @@ interface LoginPageProps {
   rememberedPhone?: string;
   messagingOnly?: boolean;
 }
-
-const APP_STORE_URL = "https://apps.apple.com";
-const GOOGLE_PLAY_URL = "https://play.google.com/store/search?q=lets%20date&c=apps";
-const loginQuickNavLinks = defaultQuickNavLinks.map((link) => ({
-  ...link,
-  page: {
-    discover: "about-discover",
-    matches: "about-matches",
-    likes: "about-likes",
-    chat: "about-messages",
-    profile: "about-profile",
-    settings: "about-settings",
-    "smart-discovery": "feature-smart-discovery",
-    "verified-profiles": "feature-verified-profiles",
-  }[link.page] || link.page,
-}));
 
 export function LoginPage({
   onLogin,
@@ -332,10 +315,6 @@ export function LoginPage({
             />
             Remember me on this device
           </label>
-          <p className="credential-manager-note">
-            We’ll remember your number here. Let your browser save your password too—less typing, more catching up.
-          </p>
-
           <button
             type="button"
             className="link-btn forgot-password-link"
@@ -361,69 +340,17 @@ export function LoginPage({
 
         <div className="login-footer">
           <p>
-            Don't have an account?{" "}
+            New to Connect?{" "}
             <button
               type="button"
               className="link-btn"
               onClick={() => setIsSignUp(!isSignUp)}
             >
-              Sign up here
+              Create account
             </button>
           </p>
-          {!messagingOnly && (
-            <div className="mobile-link">
-              <span>Download the app</span>
-              <div className="store-links">
-                <a href={GOOGLE_PLAY_URL} className="store-link" target="_blank" rel="noopener noreferrer">
-                  Google Play
-                </a>
-                <a href={APP_STORE_URL} className="store-link" target="_blank" rel="noopener noreferrer">
-                  App Store
-                </a>
-              </div>
-            </div>
-          )}
         </div>
-
-        {!messagingOnly && (
-          <QuickNav
-            title="Once signed in, you'll have access to:"
-            description="Select a section to learn what you can do there."
-            onNavigate={(page) => onViewFeature?.(page)}
-            links={loginQuickNavLinks}
-          />
-        )}
       </div>
-
-      {!messagingOnly && <div className="login-features">
-        <h2>Why Choose Connect?</h2>
-        <div className="features-list">
-          <div className="feature">
-            <span className="icon">🔍</span>
-            <h3>Smart Discovery</h3>
-            <p>Find compatible matches with advanced filters</p>
-            <button
-              type="button"
-              className="feature-link"
-              onClick={() => onViewFeature?.("feature-smart-discovery")}
-            >
-              Learn more →
-            </button>
-          </div>
-          <div className="feature">
-            <span className="icon">🛡️</span>
-            <h3>Verified Profiles</h3>
-            <p>Match with verified and authentic people</p>
-            <button
-              type="button"
-              className="feature-link"
-              onClick={() => onViewFeature?.("feature-verified-profiles")}
-            >
-              Learn more →
-            </button>
-          </div>
-        </div>
-      </div>}
     </div>
   );
 }
