@@ -59,7 +59,7 @@ async function resizeImageFile(
       el.onerror = () =>
         reject(
           new Error(
-            "Could not decode image. iPhone HEIC photos sometimes need to be exported as JPEG first.",
+            "This image format is not supported by your browser. Try saving it as JPEG, PNG, or WebP.",
           ),
         );
       el.src = objectUrl;
@@ -227,7 +227,7 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/*"
+            accept="image/*,.avif,.bmp,.gif,.heic,.heif,.jfif,.jpe,.jpeg,.jpg,.png,.tif,.tiff,.webp"
             style={{ display: "none" }}
             onChange={(e) => {
               handlePhotoFiles(e.target.files);
