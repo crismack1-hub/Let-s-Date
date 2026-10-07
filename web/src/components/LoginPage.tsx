@@ -283,7 +283,7 @@ export function LoginPage({
             <label htmlFor="phone">Phone number</label>
             <PhoneNumberInput
               id="phone"
-              name="tel"
+              name="phone"
               autoComplete="tel"
               inputMode="tel"
               placeholder="Enter your phone number"

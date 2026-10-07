@@ -1,9 +1,21 @@
 ﻿import { useState, useEffect } from "react";
 import type { SignUpData } from "../components/SignUpPage";
 import { apiUrl } from "../api";
+import { normalizePhoneNumber } from "../utils/phone";
 
 const AUTH_TOKEN_KEY = "authToken";
 const REMEMBERED_PHONE_KEY = "rememberedPhone";
+
+function getRememberedPhone() {
+  const savedValue = localStorage.getItem(REMEMBERED_PHONE_KEY) ?? "";
+  const phone = normalizePhoneNumber(savedValue);
+  if (!phone) {
+    if (savedValue) localStorage.removeItem(REMEMBERED_PHONE_KEY);
+    return "";
+  }
+  if (phone !== savedValue) localStorage.setItem(REMEMBERED_PHONE_KEY, phone);
+  return phone;
+}
 
 export interface AuthUser {
   id: string;
@@ -66,7 +78,7 @@ export function useAuth() {
         setUser(data.user);
         if (rememberMe) {
           localStorage.setItem(AUTH_TOKEN_KEY, data.token);
-          localStorage.setItem(REMEMBERED_PHONE_KEY, phone);
+          localStorage.setItem(REMEMBERED_PHONE_KEY, normalizePhoneNumber(phone) ?? phone);
           sessionStorage.removeItem(AUTH_TOKEN_KEY);
         } else {
           localStorage.removeItem(AUTH_TOKEN_KEY);
@@ -150,6 +162,10 @@ export function useAuth() {
         setToken(data.token);
         setUser(data.user);
         localStorage.setItem(AUTH_TOKEN_KEY, data.token);
+        localStorage.setItem(
+          REMEMBERED_PHONE_KEY,
+          normalizePhoneNumber(signUpData.phone) ?? signUpData.phone,
+        );
         sessionStorage.removeItem(AUTH_TOKEN_KEY);
         return { success: true };
       }
@@ -176,6 +192,6 @@ export function useAuth() {
     signUp,
     requestPasswordReset,
     resetPassword,
-    rememberedPhone: localStorage.getItem(REMEMBERED_PHONE_KEY) ?? "",
+    rememberedPhone: getRememberedPhone(),
   };
 }
