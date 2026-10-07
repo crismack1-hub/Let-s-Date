@@ -83,7 +83,6 @@ export function LikesPage({ token }: LikesPageProps) {
                 <h3>
                   {user.name}, {user.age}
                 </h3>
-                <p className="location">📍 {user.location}</p>
                 <p className="bio">{user.bio.substring(0, 80)}...</p>
 
                 <div className="like-tags">

@@ -214,7 +214,6 @@ export function FriendsPage({ token, onMessage }: FriendsPageProps) {
               </div>
               <div className="friend-card-details">
                 <h2>{person.name}, {person.age}</h2>
-                <p>{person.location}</p>
                 {person.bio && <p className="friend-bio">{person.bio}</p>}
                 <div className="friend-card-actions">
                   {view === "friends" ? (

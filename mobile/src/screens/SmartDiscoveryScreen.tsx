@@ -181,7 +181,6 @@ export function SmartDiscoveryScreen({ token, backendUrl, onNavigate }: Props) {
                 </Text>
                 {u.verified && <Text style={styles.verifiedBadge}>✓ Verified</Text>}
               </View>
-              <Text style={styles.profileLoc}>{u.location}</Text>
               {u.bio ? <Text style={styles.profileBio}>{u.bio}</Text> : null}
               <View style={styles.profileChips}>
                 {u.interests?.slice(0, 4).map((i) => (
@@ -305,7 +304,6 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     overflow: "hidden",
   },
-  profileLoc: { color: "#6b7280", fontSize: 13 },
   profileBio: { color: "#14142b", fontSize: 14, lineHeight: 20, marginTop: 4 },
   profileChips: { flexDirection: "row", gap: 6, flexWrap: "wrap", marginTop: 4 },
   profileChip: {

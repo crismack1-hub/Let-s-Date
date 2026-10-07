@@ -97,7 +97,6 @@ export function VerifiedProfilesPage({ token, onNavigate }: VerifiedProfilesPage
                 <h2>
                   {featured.name}, <span className="verified-featured-age">{featured.age}</span>
                 </h2>
-                <p className="verified-featured-location">📍 {featured.location}</p>
                 {featured.bio && <p className="verified-featured-bio">{featured.bio}</p>}
                 {featured.interests?.length ? (
                   <div className="verified-featured-tags">
@@ -140,7 +139,6 @@ export function VerifiedProfilesPage({ token, onNavigate }: VerifiedProfilesPage
                     <span className="verified-rail-name">
                       {u.name}, {u.age}
                     </span>
-                    <span className="verified-rail-loc">{u.location}</span>
                   </button>
                 ))}
               </div>
@@ -164,7 +162,6 @@ export function VerifiedProfilesPage({ token, onNavigate }: VerifiedProfilesPage
                       <h3>
                         {u.name}, {u.age}
                       </h3>
-                      <p className="verified-location">{u.location}</p>
                       {u.bio && <p className="verified-bio">{u.bio.substring(0, 100)}…</p>}
                       <div className="verified-actions">
                         <button className="btn-like" onClick={() => handleLike(u.id)}>

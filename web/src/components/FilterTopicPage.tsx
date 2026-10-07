@@ -31,8 +31,8 @@ const topics: Record<FilterTopicId, TopicContent> = {
         text: "Choose Non-smoker / Smoker / Any, and Doesn't drink / Drinks / Any. Profiles outside your selection are hidden from results.",
       },
       {
-        heading: "Body type & fitness",
-        text: "Body type filter (Slim / Average / Athletic) plus fitness as an interest chip surface people whose physical lifestyle aligns with yours.",
+        heading: "Fitness & daily habits",
+        text: "Smoking, drinking, and fitness interests help you find people whose daily habits align with yours.",
       },
       {
         heading: "Daily rhythm",
@@ -90,19 +90,15 @@ const topics: Record<FilterTopicId, TopicContent> = {
     title: "Shared values",
     subtitle: "Filter for people looking for the same kind of relationship.",
     intro:
-      "Looking-for, education, and other values matter more than chemistry on date one. These filters keep the matches aligned on the things that actually predict whether things last.",
+      "What you're looking for and shared values help align matches around the kind of relationship you want.",
     sections: [
       {
         heading: "Looking for",
         text: "Pick Long-term, Open to anything, or any. People whose intent doesn't match yours are hidden — saves the awkward third-date conversation.",
       },
       {
-        heading: "Education",
-        text: "Filter by Bachelor's / Master's / Doctorate / Trade school / Culinary school / Any. Useful when this is something that matters to you, optional when it isn't.",
-      },
-      {
         heading: "Compatibility, not gatekeeping",
-        text: "Values filters narrow results — they don't rank people. Two people with different educations can still be a great match if you keep them as Any.",
+        text: "Values filters narrow results — they don't rank people. Keep preferences flexible to meet people with different backgrounds.",
       },
     ],
     primaryCta: { label: "Open Advanced Filtering", page: "advanced-filtering" },

@@ -31,6 +31,7 @@ const AVAILABLE_INTERESTS = [
 ];
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
+type VerificationMethod = "email" | "phone";
 
 // Pick an output MIME for the canvas re-encode based on the input file. PNG
 // keeps PNG (preserves transparency); WebP stays WebP. Everything else —
@@ -86,6 +87,11 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
   const [ageInput, setAgeInput] = useState("");
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [verificationMethod, setVerificationMethod] = useState<VerificationMethod | null>(null);
+  const [verificationCode, setVerificationCode] = useState("");
+  const [verificationMessage, setVerificationMessage] = useState("");
+  const [verificationError, setVerificationError] = useState("");
+  const [verificationBusy, setVerificationBusy] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -158,6 +164,64 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
     setFormData({ ...formData, photos: next });
   };
 
+  const handleRequestVerification = async (method: VerificationMethod) => {
+    setVerificationBusy(true);
+    setVerificationError("");
+    setVerificationMessage("");
+    try {
+      const response = await fetch(apiUrl("/api/profile/verification/request"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ method }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not send a verification code.");
+      setVerificationMethod(method);
+      setVerificationCode("");
+      setVerificationMessage(result.message);
+    } catch (error) {
+      setVerificationError(error instanceof Error ? error.message : "Could not send a verification code.");
+    } finally {
+      setVerificationBusy(false);
+    }
+  };
+
+  const handleConfirmVerification = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!verificationMethod) return;
+    setVerificationBusy(true);
+    setVerificationError("");
+    setVerificationMessage("");
+    try {
+      const response = await fetch(apiUrl("/api/profile/verification/confirm"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ method: verificationMethod, code: verificationCode }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Could not verify this contact.");
+      const profileResponse = await fetch(apiUrl("/api/profile"), {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!profileResponse.ok) throw new Error("Verification succeeded, but the profile could not be refreshed.");
+      const profile = (await profileResponse.json()) as UserProfile;
+      onProfileUpdated?.(profile);
+      setVerificationMethod(null);
+      setVerificationCode("");
+      setVerificationMessage("Your profile is verified.");
+    } catch (error) {
+      setVerificationError(error instanceof Error ? error.message : "Could not verify this contact.");
+    } finally {
+      setVerificationBusy(false);
+    }
+  };
+
   const handleCancelEdit = () => {
     if (user) {
       setFormData(user);
@@ -188,11 +252,6 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
         <div className="photos-section">
           <div className="photos-section-head">
             <h2>Photos</h2>
-            {isEditing && photos.length > 0 && (
-              <span className="photos-hint">
-                Add up to 6 — first photo is your main profile picture.
-              </span>
-            )}
           </div>
           <div className="photos-grid">
             {photos.length === 0 && !isEditing && (
@@ -237,6 +296,51 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
         </div>
 
         <div className="info-section">
+          {!isEditing && <section className="profile-verification">
+            <h2>Profile verification</h2>
+            <p>
+              {user.verified
+                ? "Your profile is verified."
+                : "Verify your email address or account phone number to get a verified badge."}
+            </p>
+            <div className="profile-verification-actions">
+              <button
+                type="button"
+                onClick={() => handleRequestVerification("email")}
+                disabled={verificationBusy || user.emailVerified}
+              >
+                {user.emailVerified ? "Email verified" : "Verify email"}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleRequestVerification("phone")}
+                disabled={verificationBusy || user.phoneVerified}
+              >
+                {user.phoneVerified ? "Phone verified" : "Verify phone"}
+              </button>
+            </div>
+            {verificationMethod && (
+              <form className="profile-verification-code" onSubmit={handleConfirmVerification}>
+                <label htmlFor="profile-verification-code">6-digit code</label>
+                <input
+                  id="profile-verification-code"
+                  type="text"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  pattern="[0-9]{6}"
+                  maxLength={6}
+                  value={verificationCode}
+                  onChange={(event) => setVerificationCode(event.target.value.replace(/\D/g, ""))}
+                  required
+                />
+                <button type="submit" disabled={verificationBusy || verificationCode.length !== 6}>
+                  {verificationBusy ? "Checking…" : "Confirm"}
+                </button>
+              </form>
+            )}
+            {verificationMessage && <p className="verification-success" role="status">{verificationMessage}</p>}
+            {verificationError && <p className="verification-error" role="alert">{verificationError}</p>}
+          </section>}
           {isEditing ? (
             <div className="edit-form">
               <div className="form-group">
@@ -248,30 +352,20 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
                 />
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Age</label>
-                  <input
-                    type="number"
-                    min={18}
-                    max={120}
-                    step={1}
-                    value={ageInput}
-                    onChange={(e) => {
-                      setAgeInput(e.target.value);
-                      setSaveStatus("idle");
-                      setSaveError(null);
-                    }}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Location</label>
-                  <input
-                    type="text"
-                    value={formData?.location || ""}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  />
-                </div>
+              <div className="form-group">
+                <label>Age</label>
+                <input
+                  type="number"
+                  min={18}
+                  max={120}
+                  step={1}
+                  value={ageInput}
+                  onChange={(e) => {
+                    setAgeInput(e.target.value);
+                    setSaveStatus("idle");
+                    setSaveError(null);
+                  }}
+                />
               </div>
 
               <div className="contact-fieldset">
@@ -330,61 +424,26 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
                 />
               </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Height</label>
-                  <input
-                    type="text"
-                    value={formData?.height || ""}
-                    onChange={(e) => setFormData({ ...formData, height: e.target.value })}
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Body Type</label>
-                  <select
-                    value={formData?.bodyType || ""}
-                    onChange={(e) => setFormData({ ...formData, bodyType: e.target.value })}
-                  >
-                    <option value="">Select…</option>
-                    <option>Slim</option>
-                    <option>Athletic</option>
-                    <option>Average</option>
-                    <option>Curvy</option>
-                    <option>Muscular</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Zodiac Sign</label>
-                  <select
-                    value={formData?.zodiacSign || ""}
-                    onChange={(e) => setFormData({ ...formData, zodiacSign: e.target.value })}
-                  >
-                    <option value="">Select…</option>
-                    <option>♈ Aries</option>
-                    <option>♉ Taurus</option>
-                    <option>♊ Gemini</option>
-                    <option>♋ Cancer</option>
-                    <option>♌ Leo</option>
-                    <option>♍ Virgo</option>
-                    <option>♎ Libra</option>
-                    <option>♏ Scorpio</option>
-                    <option>♐ Sagittarius</option>
-                    <option>♑ Capricorn</option>
-                    <option>♒ Aquarius</option>
-                    <option>♓ Pisces</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Education</label>
-                  <input
-                    type="text"
-                    value={formData?.education || ""}
-                    onChange={(e) => setFormData({ ...formData, education: e.target.value })}
-                  />
-                </div>
+              <div className="form-group">
+                <label>Zodiac Sign</label>
+                <select
+                  value={formData?.zodiacSign || ""}
+                  onChange={(e) => setFormData({ ...formData, zodiacSign: e.target.value })}
+                >
+                  <option value="">Select…</option>
+                  <option>♈ Aries</option>
+                  <option>♉ Taurus</option>
+                  <option>♊ Gemini</option>
+                  <option>♋ Cancer</option>
+                  <option>♌ Leo</option>
+                  <option>♍ Virgo</option>
+                  <option>♎ Libra</option>
+                  <option>♏ Scorpio</option>
+                  <option>♐ Sagittarius</option>
+                  <option>♑ Capricorn</option>
+                  <option>♒ Aquarius</option>
+                  <option>♓ Pisces</option>
+                </select>
               </div>
 
               <div className="form-group">
@@ -444,7 +503,6 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
 
               <div className="info-item">
                 <h3>{user.name}, {user.age}</h3>
-                <p className="location">📍 {user.location}</p>
               </div>
 
               <div className="info-item">
@@ -453,24 +511,6 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
               </div>
 
               <div className="info-grid">
-                {user.height && (
-                  <div className="info-block">
-                    <span className="label">Height</span>
-                    <span className="value">{user.height}</span>
-                  </div>
-                )}
-                {user.bodyType && (
-                  <div className="info-block">
-                    <span className="label">Body Type</span>
-                    <span className="value">{user.bodyType}</span>
-                  </div>
-                )}
-                {user.education && (
-                  <div className="info-block">
-                    <span className="label">Education</span>
-                    <span className="value">{user.education}</span>
-                  </div>
-                )}
                 {user.zodiacSign && (
                   <div className="info-block">
                     <span className="label">Zodiac</span>

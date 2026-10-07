@@ -82,11 +82,11 @@ const featureLinks: FeatureLink[] = [
     url: "https://letsdateapp.com/features/verified-profiles",
   },
   {
-    id: "real-conversations",
+    id: "messages",
     icon: "💬",
-    title: "Real Conversations",
+    title: "Messages",
     description: "Real-time messaging with real humans — no bots, no AI.",
-    url: "https://letsdateapp.com/features/real-conversations",
+    url: "https://let-s-date.vercel.app/messages",
   },
   {
     id: "better-matches",
@@ -329,7 +329,7 @@ export default function App() {
         <ScrollView contentContainerStyle={styles.loginContent}>
           <View style={styles.brandRow}>
             <Text style={styles.brandHeart}>💕</Text>
-            <Text style={styles.brandWord}>Let's Date</Text>
+            <Text style={styles.brandWord}>Let's Chat</Text>
           </View>
           <Text style={styles.heroHeadline}>Real people. Real connections.</Text>
           <Text style={styles.heroSub}>
@@ -545,7 +545,7 @@ export default function App() {
         <View style={styles.modernHeader}>
           <Pressable
             onPress={() => setCurrentPage("home")}
-            accessibilityLabel="Let's Date — go to home"
+            accessibilityLabel="Let's Chat — go to home"
             hitSlop={6}
           >
             <Text style={styles.headerLogo}>💕 Messages</Text>

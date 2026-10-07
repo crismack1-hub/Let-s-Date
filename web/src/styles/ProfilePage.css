@@ -43,6 +43,75 @@
   gap: 30px;
 }
 
+.profile-verification {
+  margin-bottom: 20px;
+  padding: 18px;
+  border: 1px solid #e6e8ec;
+  border-radius: 14px;
+  background: #fafbfc;
+}
+
+.profile-verification h2 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+}
+
+.profile-verification p {
+  margin: 0 0 12px;
+  color: #6b7280;
+}
+
+.profile-verification-actions,
+.profile-verification-code {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px;
+}
+
+.profile-verification button {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #7657d6;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-verification button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.profile-verification-code {
+  margin-top: 12px;
+}
+
+.profile-verification-code label {
+  flex-basis: 100%;
+  font-weight: 600;
+}
+
+.profile-verification-code input {
+  min-height: 40px;
+  width: 150px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.profile-verification .verification-success {
+  margin-top: 12px;
+  color: #15803d;
+}
+
+.profile-verification .verification-error {
+  margin-top: 12px;
+  color: #b42318;
+}
+
 .photos-section {
   background: white;
   padding: 24px;

@@ -19,12 +19,6 @@ const features = [
     icon: "🛡️",
   },
   {
-    id: "real-conversations",
-    title: "Real Conversations",
-    description: "Start instant messaging with real people and experience live chat features.",
-    icon: "💬",
-  },
-  {
     id: "better-matches",
     title: "Better Matches",
     description: "Real compatibility based on shared values and interests for more meaningful matches.",
@@ -38,7 +32,7 @@ export function FeatureOverviewPage({ onViewFeature }: FeatureOverviewPageProps)
       <div className="feature-page-hero">
         <h1>Real People. Real Connections.</h1>
         <p>
-          Let's Date is 100% human — no bots, no AI. Just real people looking for genuine
+          Let's Chat is 100% human — no bots, no AI. Just real people looking for genuine
           conversation and meaningful matches.
         </p>
       </div>

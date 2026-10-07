@@ -1,4 +1,4 @@
-# Date Messaging App
+# Let's Chat
 
 This workspace contains a full-stack messaging platform scaffold for web + mobile.
 
@@ -11,7 +11,7 @@ This workspace contains a full-stack messaging platform scaffold for web + mobil
 
 ## Features
 
-- User auth + phone verification
+- User auth + email or phone profile verification (SMTP/Twilio)
 - 1:1 and group chat
 - Media sharing: images, audio, video, documents
 - Voice/video calling via WebRTC
@@ -32,9 +32,21 @@ This workspace contains a full-stack messaging platform scaffold for web + mobil
 
 This repository is a scaffold for the full application. The backend exposes REST APIs and Socket.IO events. The web and mobile clients connect to the same realtime backend.
 
+### Email and phone verification
+
+The backend can send profile-verification codes by SMTP email or Twilio SMS. Configure these
+environment variables on the backend before enabling verification:
+
+- Email: `SMTP_HOST`, `SMTP_PORT` (optional; defaults to 587), `SMTP_SECURE` (optional),
+  `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM`.
+- SMS: `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and `TWILIO_FROM_NUMBER`.
+
+Codes expire after 10 minutes, are rate-limited, and are limited to five confirmation attempts.
+Verification codes are never returned by the API.
+
 ### Password recovery
 
-The web login includes a development-only phone OTP password reset flow. When running outside production, the OTP is shown in the browser because no SMS provider is configured. Password reset requests return `503` in production until SMS delivery is integrated; do not enable the development OTP flow for a public deployment.
+The web login includes a development-only phone OTP password reset flow. When running outside production, the OTP is shown in the browser. Password reset requests return `503` in production until password-reset SMS delivery is configured; do not enable the development OTP flow for a public deployment.
 
 ## Next steps
 

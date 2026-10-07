@@ -1,6 +1,8 @@
 import { Router, Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { createHash, randomBytes, randomInt, timingSafeEqual } from "crypto";
 import { storage } from "./storage";
+import { sendVerificationCode, type VerificationMethod } from "./verificationDelivery";
 
 const jwtSecret = process.env.JWT_SECRET ?? "development-secret";
 
@@ -9,6 +11,10 @@ const likes = new Map<string, Set<string>>();
 const favorites = new Map<string, Set<string>>();
 const friends = new Map<string, Set<string>>();
 const profileOverrides = new Map<string, Record<string, unknown>>();
+const verificationChallenges = new Map<
+  string,
+  { hash: Buffer; salt: string; destination: string; expiresAt: number; lastSentAt: number; attempts: number }
+>();
 
 function parseMatchId(matchId: string): string {
   return matchId.startsWith("match-") ? matchId.slice("match-".length) : matchId;
@@ -59,6 +65,8 @@ function defaultProfile(userId: string) {
     zodiacSign: "",
     email: "",
     phone: "",
+    emailVerified: false,
+    phoneVerified: false,
     showEmail: false,
     showPhone: false,
   };
@@ -72,8 +80,19 @@ function registeredProfiles() {
       ...overrides,
       id,
       name: typeof overrides.name === "string" ? overrides.name : name,
+      emailVerified: overrides.emailVerified === true,
+      phoneVerified: overrides.phoneVerified === true,
+      verified: overrides.emailVerified === true || overrides.phoneVerified === true,
     };
   });
+}
+
+function verificationChallengeKey(userId: string, method: VerificationMethod) {
+  return `${userId}:${method}`;
+}
+
+function hashVerificationCode(salt: string, code: string) {
+  return createHash("sha256").update(`${salt}:${code}`).digest();
 }
 
 interface AuthedRequest extends Request {
@@ -99,7 +118,13 @@ router.use(requireAuth);
 
 router.get("/profile", (req: AuthedRequest, res) => {
   const overrides = profileOverrides.get(req.userId!) ?? {};
-  res.json({ ...defaultProfile(req.userId!), ...overrides });
+  res.json({
+    ...defaultProfile(req.userId!),
+    ...overrides,
+    emailVerified: overrides.emailVerified === true,
+    phoneVerified: overrides.phoneVerified === true,
+    verified: overrides.emailVerified === true || overrides.phoneVerified === true,
+  });
 });
 
 router.put("/profile", (req: AuthedRequest, res) => {
@@ -110,8 +135,126 @@ router.put("/profile", (req: AuthedRequest, res) => {
   }
   const current = profileOverrides.get(req.userId!) ?? {};
   const next = { ...current, ...filtered };
+  if (
+    typeof filtered.email === "string" &&
+    filtered.email.trim().toLowerCase() !==
+      (typeof current.email === "string" ? current.email.trim().toLowerCase() : "")
+  ) {
+    delete next.emailVerified;
+    delete next.verified;
+    verificationChallenges.delete(verificationChallengeKey(req.userId!, "email"));
+  }
   profileOverrides.set(req.userId!, next);
-  res.json({ ...defaultProfile(req.userId!), ...next });
+  res.json({
+    ...defaultProfile(req.userId!),
+    ...next,
+    emailVerified: next.emailVerified === true,
+    phoneVerified: next.phoneVerified === true,
+    verified: next.emailVerified === true || next.phoneVerified === true,
+  });
+});
+
+router.post("/profile/verification/request", async (req: AuthedRequest, res) => {
+  const method = req.body?.method;
+  if (method !== "email" && method !== "phone") {
+    return res.status(400).json({ error: "Choose email or phone verification." });
+  }
+
+  const userId = req.userId!;
+  const profile = profileOverrides.get(userId) ?? {};
+  const destination = method === "email"
+    ? (typeof profile.email === "string" ? profile.email.trim().toLowerCase() : "")
+    : (storage.findUserById(userId)?.phone ?? "");
+  if (!destination) {
+    return res.status(400).json({
+      error: method === "email"
+        ? "Add and save an email address in your profile before verifying it."
+        : "No phone number is associated with this account.",
+    });
+  }
+  if (method === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(destination)) {
+    return res.status(400).json({ error: "Enter a valid email address in your profile before verifying it." });
+  }
+
+  const key = verificationChallengeKey(userId, method);
+  const previous = verificationChallenges.get(key);
+  const now = Date.now();
+  if (previous && now - previous.lastSentAt < 60_000) {
+    return res.status(429).json({ error: "Wait one minute before requesting another code." });
+  }
+
+  const code = String(randomInt(100000, 1000000));
+  const salt = randomBytes(16).toString("hex");
+  try {
+    await sendVerificationCode(method, destination, code);
+  } catch (error) {
+    console.error(
+      `${method} verification code delivery failed:`,
+      error instanceof Error ? error.message : "Unknown delivery error.",
+    );
+    return res.status(503).json({
+      error: error instanceof Error ? error.message : "Could not deliver verification code.",
+    });
+  }
+
+  verificationChallenges.set(key, {
+    hash: hashVerificationCode(salt, code),
+    salt,
+    destination,
+    expiresAt: now + 10 * 60_000,
+    lastSentAt: now,
+    attempts: 0,
+  });
+  return res.json({ success: true, message: `A verification code was sent to your ${method}.` });
+});
+
+router.post("/profile/verification/confirm", (req: AuthedRequest, res) => {
+  const method = req.body?.method;
+  const code = typeof req.body?.code === "string" ? req.body.code.trim() : "";
+  if ((method !== "email" && method !== "phone") || !/^\d{6}$/.test(code)) {
+    return res.status(400).json({ error: "Enter a valid 6-digit verification code." });
+  }
+
+  const userId = req.userId!;
+  const key = verificationChallengeKey(userId, method);
+  const challenge = verificationChallenges.get(key);
+  if (!challenge || challenge.expiresAt <= Date.now()) {
+    verificationChallenges.delete(key);
+    return res.status(400).json({ error: "That code has expired. Request a new one." });
+  }
+  if (challenge.attempts >= 5) {
+    verificationChallenges.delete(key);
+    return res.status(429).json({ error: "Too many incorrect attempts. Request a new code." });
+  }
+
+  const current = profileOverrides.get(userId) ?? {};
+  const currentDestination = method === "email"
+    ? (typeof current.email === "string" ? current.email.trim().toLowerCase() : "")
+    : (storage.findUserById(userId)?.phone ?? "");
+  if (currentDestination !== challenge.destination) {
+    verificationChallenges.delete(key);
+    return res.status(400).json({ error: "The contact changed. Request a new verification code." });
+  }
+
+  challenge.attempts += 1;
+  const submittedHash = hashVerificationCode(challenge.salt, code);
+  if (!timingSafeEqual(challenge.hash, submittedHash)) {
+    if (challenge.attempts >= 5) {
+      verificationChallenges.delete(key);
+      return res.status(429).json({ error: "Too many incorrect attempts. Request a new code." });
+    }
+    return res.status(400).json({ error: "That verification code is incorrect." });
+  }
+
+  verificationChallenges.delete(key);
+  const next = {
+    ...current,
+    [method === "email" ? "emailVerified" : "phoneVerified"]: true,
+  };
+  next.verified = next.emailVerified === true || next.phoneVerified === true;
+  profileOverrides.set(userId, next);
+  const verified = next.emailVerified === true || next.phoneVerified === true;
+  return res.json({ success: true, verified, emailVerified: next.emailVerified === true, phoneVerified: next.phoneVerified === true });
 });
 
 router.get("/discover", (req: AuthedRequest, res) => {

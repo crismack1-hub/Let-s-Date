@@ -16,7 +16,6 @@ export const defaultQuickNavLinks: QuickNavLink[] = [
   { label: "Settings", page: "settings", icon: "⚙️" },
   { label: "Smart Discovery", page: "smart-discovery", icon: "🔍" },
   { label: "Verified Profiles", page: "verified-profiles", icon: "🛡️" },
-  { label: "Real Conversations", page: "real-conversations", icon: "💬" },
   { label: "Better Matches", page: "better-matches", icon: "💞" },
   { label: "Subscribe", page: "subscribe", icon: "★" },
 ];

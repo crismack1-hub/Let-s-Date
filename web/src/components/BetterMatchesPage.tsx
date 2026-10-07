@@ -181,7 +181,6 @@ export function BetterMatchesPage({ token, onNavigate }: BetterMatchesPageProps)
                     <h3>
                       {u.name}, {u.age}
                     </h3>
-                    <p className="verified-location">{u.location}</p>
                     {u.bio && <p className="verified-bio">{u.bio.substring(0, 90)}…</p>}
                     {u.interests?.length ? (
                       <div className="strength-interests">

@@ -25,7 +25,7 @@ const content: Record<PageInfoId, InfoContent> = {
     title: "Discover",
     subtitle: "Browse profiles one at a time and like the people you'd like to meet.",
     intro:
-      "Discover is the heart of Let's Date. One real person at a time, full profile, no algorithmic feed games — just a clean ♥ Like or Pass on every card.",
+      "Discover is the heart of Let's Chat. One real person at a time, full profile, no algorithmic feed games — just a clean ♥ Like or Pass on every card.",
     sections: [
       {
         heading: "One profile at a time",

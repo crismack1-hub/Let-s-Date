@@ -17,9 +17,7 @@ interface Filters {
   location: string;
   smoking: Choice;
   drinking: Choice;
-  bodyType: string;
   lookingFor: string;
-  education: string;
   gender: string;
   interests: string[];
 }
@@ -43,9 +41,7 @@ const initialFilters: Filters = {
   location: "",
   smoking: "any",
   drinking: "any",
-  bodyType: "any",
   lookingFor: "any",
-  education: "any",
   gender: "any",
   interests: [],
 };
@@ -55,7 +51,7 @@ const filterTopics = [
     id: "lifestyle",
     icon: "🌿",
     title: "Lifestyle",
-    text: "Filter by smoking, drinking, body type, and daily habits to find people who fit how you actually live.",
+    text: "Filter by smoking, drinking, and daily habits to find people who fit how you actually live.",
   },
   {
     id: "interests",
@@ -73,7 +69,7 @@ const filterTopics = [
     id: "shared-values",
     icon: "🤝",
     title: "Shared values",
-    text: "What you're looking for, education, and values — narrow to people who match the kind of relationship you want.",
+    text: "What you're looking for and shared values — narrow to people who match the kind of relationship you want.",
   },
 ];
 
@@ -108,9 +104,7 @@ export function AdvancedFilteringPage({ token, onNavigate }: AdvancedFilteringPa
       if (filters.smoking === "no" && u.smoking) return false;
       if (filters.drinking === "yes" && !u.drinking) return false;
       if (filters.drinking === "no" && u.drinking) return false;
-      if (filters.bodyType !== "any" && u.bodyType !== filters.bodyType) return false;
       if (filters.lookingFor !== "any" && u.lookingFor !== filters.lookingFor) return false;
-      if (filters.education !== "any" && u.education !== filters.education) return false;
       if (filters.interests.length) {
         if (!u.interests?.some((i) => filters.interests.includes(i))) return false;
       }
@@ -256,19 +250,6 @@ export function AdvancedFilteringPage({ token, onNavigate }: AdvancedFilteringPa
           </div>
 
           <div className="filter-group">
-            <label className="filter-group-title">💪 Body type</label>
-            <select
-              value={filters.bodyType}
-              onChange={(e) => setFilters({ ...filters, bodyType: e.target.value })}
-            >
-              <option value="any">Any</option>
-              <option value="Slim">Slim</option>
-              <option value="Average">Average</option>
-              <option value="Athletic">Athletic</option>
-            </select>
-          </div>
-
-          <div className="filter-group">
             <label className="filter-group-title">💞 Looking for</label>
             <select
               value={filters.lookingFor}
@@ -277,21 +258,6 @@ export function AdvancedFilteringPage({ token, onNavigate }: AdvancedFilteringPa
               <option value="any">Any</option>
               <option value="Long-term">Long-term</option>
               <option value="Open to anything">Open to anything</option>
-            </select>
-          </div>
-
-          <div className="filter-group">
-            <label className="filter-group-title">🎓 Education</label>
-            <select
-              value={filters.education}
-              onChange={(e) => setFilters({ ...filters, education: e.target.value })}
-            >
-              <option value="any">Any</option>
-              <option value="Bachelor's">Bachelor's</option>
-              <option value="Master's">Master's</option>
-              <option value="Doctorate">Doctorate</option>
-              <option value="Trade school">Trade school</option>
-              <option value="Culinary school">Culinary school</option>
             </select>
           </div>
 
@@ -349,7 +315,6 @@ export function AdvancedFilteringPage({ token, onNavigate }: AdvancedFilteringPa
                     <h3>
                       {u.name}, {u.age}
                     </h3>
-                    <p className="verified-location">{u.location}</p>
                     {u.bio && <p className="verified-bio">{u.bio.substring(0, 100)}…</p>}
                     <div className="verified-actions">
                       <button

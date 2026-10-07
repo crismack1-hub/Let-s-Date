@@ -15,7 +15,6 @@ const freeFeatures = [
 
 const premiumFeatures = [
   "Unlimited messaging — chat without daily limits",
-  "Real Conversations with everyone you match",
   "Priority placement in Smart Discovery",
   "Unlock all interest filters",
   "Better Matches with full compatibility insights",
@@ -42,7 +41,7 @@ export function SubscribePage({ onNavigate }: SubscribePageProps) {
         <span className="subscribe-eyebrow">Plans</span>
         <h1>Pick the plan that fits how you date</h1>
         <p>
-          Both plans give you access to real people on Let's Date. Premium removes the daily
+          Both plans give you access to real people on Let's Chat. Premium removes the daily
           message cap so you can talk to everyone you match with.
         </p>
         {!isPremium && messagesLeftToday !== Infinity && (
@@ -130,9 +129,6 @@ export function SubscribePage({ onNavigate }: SubscribePageProps) {
       </p>
 
       <div className="subscribe-jump">
-        <button type="button" className="subscribe-link" onClick={() => onNavigate("real-conversations")}>
-          See Real Conversations →
-        </button>
         <button type="button" className="subscribe-link" onClick={() => onNavigate("settings")}>
           Manage in Settings →
         </button>

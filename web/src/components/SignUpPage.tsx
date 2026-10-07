@@ -331,7 +331,7 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
         </div>
 
         <div className="signup-features">
-          <h3>Why Join Let's Date?</h3>
+          <h3>Why Join Let's Chat?</h3>
           <div className="features-showcase">
             <div className="feature-item">
               <span className="feature-icon">🔍</span>
@@ -355,18 +355,6 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
                 onClick={() => onViewFeature?.("feature-verified-profiles")}
               >
                 Learn more →
-              </button>
-            </div>
-            <div className="feature-item">
-              <span className="feature-icon">💬</span>
-              <h4>Real Conversations</h4>
-              <p>Connect instantly with real-time messaging</p>
-              <button
-                type="button"
-                className="feature-link"
-                onClick={() => onViewFeature?.("real-conversations")}
-              >
-                Open chats →
               </button>
             </div>
             <div className="feature-item">

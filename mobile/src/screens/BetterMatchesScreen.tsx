@@ -147,7 +147,6 @@ export function BetterMatchesScreen({ token, backendUrl, onNavigate }: Props) {
                 <Text style={styles.matchName}>
                   {u.name}, {u.age}
                 </Text>
-                <Text style={styles.matchLoc}>{u.location}</Text>
                 {u.bio ? (
                   <Text style={styles.matchBio} numberOfLines={2}>
                     {u.bio}
@@ -270,7 +269,6 @@ const styles = StyleSheet.create({
   onlinePillText: { color: "#fff", fontSize: 10, fontWeight: "700" },
   matchBody: { padding: 14, gap: 6 },
   matchName: { fontSize: 17, fontWeight: "700", color: "#14142b" },
-  matchLoc: { color: "#6b7280", fontSize: 13 },
   matchBio: { color: "#14142b", fontSize: 13, lineHeight: 18 },
   bar: {
     position: "relative",

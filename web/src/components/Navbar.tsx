@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import "../styles/Navbar.css";
 
 import { useSubscription } from "../hooks/useSubscription";
@@ -18,6 +19,14 @@ export function Navbar({
   onLogout,
 }: NavbarProps) {
   const { isPremium } = useSubscription();
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    menuRef.current
+      ?.querySelector<HTMLElement>(".nav-link.active")
+      ?.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+  }, [currentPage]);
+
   return (
     <nav className="navbar">
       <div className="navbar-brand">
@@ -31,7 +40,7 @@ export function Navbar({
         </button>
       </div>
 
-      <div className="navbar-menu">
+      <div className="navbar-menu" ref={menuRef} aria-label="Main navigation">
         <button
           className={`nav-link ${currentPage === "browse" ? "active" : ""}`}
           onClick={() => onNavigate("browse")}
@@ -72,14 +81,6 @@ export function Navbar({
           onClick={() => onNavigate("verified-profiles")}
         >
           🛡️ Verified
-        </button>
-
-        <button
-          className={`nav-link ${currentPage === "real-conversations" ? "active" : ""}`}
-          onClick={() => onNavigate("real-conversations")}
-          title="Open real conversations"
-        >
-          💬 Real Conversations
         </button>
 
         <button

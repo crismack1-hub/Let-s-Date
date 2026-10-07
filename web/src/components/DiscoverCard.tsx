@@ -53,28 +53,15 @@ export function DiscoverCard({ user, onLike, onPass, onViewProfile }: DiscoverCa
             {user.name}, <span className="discover-age">{user.age}</span>
             {user.verified && <span className="verified-badge">✓ Verified</span>}
           </h2>
-          <p className="discover-location">📍 {user.location}</p>
         </header>
 
         {user.bio && <p className="discover-bio">{user.bio}</p>}
 
         <div className="discover-facts">
-          {user.height && (
-            <div className="discover-fact">
-              <span className="discover-fact-label">Height</span>
-              <span className="discover-fact-value">{user.height}</span>
-            </div>
-          )}
           {user.lookingFor && (
             <div className="discover-fact">
               <span className="discover-fact-label">Looking for</span>
               <span className="discover-fact-value">{user.lookingFor}</span>
-            </div>
-          )}
-          {user.education && (
-            <div className="discover-fact">
-              <span className="discover-fact-label">Education</span>
-              <span className="discover-fact-value">{user.education}</span>
             </div>
           )}
           {user.occupation && (

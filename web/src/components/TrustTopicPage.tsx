@@ -76,7 +76,7 @@ const topics: Record<TrustTopicId, TopicContent> = {
     title: "Real People Only",
     subtitle: "No bots. No AI companions. No catfishing.",
     intro:
-      "Let's Date is built for human connection. We block automated accounts, AI-generated personas, and recycled photos — so every profile in the verified feed is a real, accountable human.",
+      "Let's Chat is built for human connection. We block automated accounts, AI-generated personas, and recycled photos — so every profile in the verified feed is a real, accountable human.",
     sections: [
       {
         heading: "No AI profiles",

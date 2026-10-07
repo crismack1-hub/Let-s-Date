@@ -32,7 +32,6 @@ export function SmartDiscoveryPage({ token }: SmartDiscoveryPageProps) {
     distance: 50,
     location: "",
     lookingFor: "any",
-    education: "any",
   });
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,7 +85,6 @@ export function SmartDiscoveryPage({ token }: SmartDiscoveryPageProps) {
     if (u.age < filters.ageMin || u.age > filters.ageMax) return false;
     if (filters.location && !u.location.toLowerCase().includes(filters.location.toLowerCase())) return false;
     if (filters.lookingFor !== "any" && u.lookingFor !== filters.lookingFor) return false;
-    if (filters.education !== "any" && u.education !== filters.education) return false;
     if (selectedInterests.length && !u.interests?.some((ui) => selectedInterests.includes(ui))) return false;
     return true;
   });
@@ -161,21 +159,6 @@ export function SmartDiscoveryPage({ token }: SmartDiscoveryPageProps) {
             <option value="any">Any</option>
             <option value="Long-term">Long-term</option>
             <option value="Open to anything">Open to anything</option>
-          </select>
-        </div>
-
-        <div className="feature-control-row">
-          <label>Education</label>
-          <select
-            value={filters.education}
-            onChange={(e) => setFilters({ ...filters, education: e.target.value })}
-          >
-            <option value="any">Any</option>
-            <option value="Bachelor's">Bachelor's</option>
-            <option value="Master's">Master's</option>
-            <option value="Doctorate">Doctorate</option>
-            <option value="Trade school">Trade school</option>
-            <option value="Culinary school">Culinary school</option>
           </select>
         </div>
 

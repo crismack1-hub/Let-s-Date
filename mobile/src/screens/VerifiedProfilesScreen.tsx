@@ -93,7 +93,6 @@ export function VerifiedProfilesScreen({ token, backendUrl, onNavigate }: Props)
               <Text style={styles.profileName}>
                 {u.name}, {u.age}
               </Text>
-              <Text style={styles.profileLoc}>{u.location}</Text>
               {u.bio ? <Text style={styles.profileBio}>{u.bio}</Text> : null}
               <View style={styles.profileActions}>
                 <Pressable
@@ -182,7 +181,6 @@ const styles = StyleSheet.create({
   },
   profileBody: { padding: 14, gap: 6 },
   profileName: { fontSize: 17, fontWeight: "700", color: "#14142b" },
-  profileLoc: { color: "#6b7280", fontSize: 13 },
   profileBio: { color: "#14142b", fontSize: 14, lineHeight: 20, marginTop: 4 },
   profileActions: { flexDirection: "row", gap: 8, marginTop: 10 },
   likeBtn: {

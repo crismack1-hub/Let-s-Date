@@ -236,7 +236,7 @@ export function SettingsPage({ userProfile, onSaveSettings, onNavigate }: Settin
           {activeTab === "notifications" && (
             <section className="settings-section">
               <h2 className="settings-section-title">Notifications</h2>
-              <p className="settings-section-sub">Choose how Let's Date reaches you.</p>
+              <p className="settings-section-sub">Choose how Let's Chat reaches you.</p>
 
               <div className="settings-card settings-row-list">
                 <Toggle

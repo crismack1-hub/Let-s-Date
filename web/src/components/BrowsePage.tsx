@@ -71,13 +71,6 @@ const links: BrowseLink[] = [
     description: "Browse only identity-verified, real human profiles.",
   },
   {
-    icon: "💬",
-    title: "Real Conversations",
-    page: "real-conversations",
-    infoPage: "feature-real-conversations",
-    description: "Chat with the real people you've matched with.",
-  },
-  {
     icon: "💞",
     title: "Better Matches",
     page: "better-matches",
@@ -92,7 +85,7 @@ export function BrowsePage({ onNavigate }: BrowsePageProps) {
       <header className="browse-hero">
         <span className="browse-eyebrow">All sections</span>
         <h1>Browse the app</h1>
-        <p>Every page in Let's Date — pick where you want to go.</p>
+        <p>Every page in Let's Chat — pick where you want to go.</p>
       </header>
 
       <ul className="browse-grid">

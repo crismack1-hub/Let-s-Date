@@ -141,9 +141,8 @@ export function MatchesPage({ token, onMessage }: MatchesPageProps) {
                     {match.user.verified && <span className="match-row-verified">✓</span>}
                   </div>
                   <div className="match-row-meta">
-                    {match.user.location}
                     {typeof match.interestOverlap === "number" && match.interestOverlap > 0 && (
-                      <span className="match-row-overlap"> · {match.interestOverlap}% shared</span>
+                      <span className="match-row-overlap">{match.interestOverlap}% shared</span>
                     )}
                   </div>
                 </div>
@@ -166,7 +165,7 @@ export function MatchesPage({ token, onMessage }: MatchesPageProps) {
                       {selected.user.name}, <span className="matches-detail-age">{selected.user.age}</span>
                     </h2>
                     <p className="matches-detail-meta">
-                      📍 {selected.user.location} · Matched{" "}
+                      Matched{" "}
                       {new Date(selected.matchedAt).toLocaleDateString()}
                     </p>
                     {typeof selected.interestOverlap === "number" && selected.interestOverlap > 0 && (
@@ -190,14 +189,8 @@ export function MatchesPage({ token, onMessage }: MatchesPageProps) {
                   {selected.user.bio && <p className="matches-detail-bio">{selected.user.bio}</p>}
 
                   <div className="matches-detail-facts">
-                    {selected.user.height && (
-                      <div><span className="fact-k">Height</span><span className="fact-v">{selected.user.height}</span></div>
-                    )}
                     {selected.user.lookingFor && (
                       <div><span className="fact-k">Looking for</span><span className="fact-v">{selected.user.lookingFor}</span></div>
-                    )}
-                    {selected.user.education && (
-                      <div><span className="fact-k">Education</span><span className="fact-v">{selected.user.education}</span></div>
                     )}
                     {selected.user.occupation && (
                       <div><span className="fact-k">Occupation</span><span className="fact-v">{selected.user.occupation}</span></div>

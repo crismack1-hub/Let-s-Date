@@ -21,6 +21,8 @@ export type UserProfile = User & {
   smoking: boolean;
   drinking: boolean;
   zodiacSign: string;
+  emailVerified?: boolean;
+  phoneVerified?: boolean;
   email?: string;
   phone?: string;
   showEmail?: boolean;

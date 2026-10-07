@@ -3,7 +3,6 @@ import "../styles/FeaturePage.css";
 type FeatureId =
   | "smart-discovery"
   | "verified-profiles"
-  | "real-conversations"
   | "better-matches";
 
 interface FeaturePageProps {
@@ -120,38 +119,6 @@ const featureData: Record<FeatureId, FeatureContent> = {
       { id: "better-matches", title: "Better Matches", icon: "💞" },
     ],
   },
-  "real-conversations": {
-    title: "Real Conversations",
-    subtitle: "Connect instantly with real-time chat.",
-    intro:
-      "Start meaningful conversations in real time with people who are actually on the other side of the chat.",
-    sections: [
-      {
-        heading: "Instant Messaging",
-        text: "Send messages, share feelings, and respond faster with live chat support.",
-      },
-      {
-        heading: "Real Replies",
-        text: "Every message is written by a real person — no auto-replies, no generated responses.",
-      },
-      {
-        heading: "Secure Connections",
-        text: "Your conversations stay private and safe while you explore new connections.",
-      },
-    ],
-    humanFocus:
-      "Conversations on Let's Date are 100% human-to-human. No chatbots, no smart-reply bots — just genuine messages from real people.",
-    ctas: [
-      { label: "Open chats", page: "chat", variant: "primary", signedOutLabel: "Sign in to open chats" },
-      { label: "View matches", page: "matches", variant: "secondary", signedOutLabel: "Sign in to view matches" },
-    ],
-    quickLinks: sharedQuickLinks,
-    related: [
-      { id: "verified-profiles", title: "Verified Profiles", icon: "🛡️" },
-      { id: "smart-discovery", title: "Smart Discovery", icon: "🔍" },
-    ],
-    externalLink: { href: "https://play.google.com/store/search?q=lets%20date&c=apps", label: "Find us on Google Play" },
-  },
   "better-matches": {
     title: "Better Matches",
     subtitle: "Genuine compatibility for stronger connections.",
@@ -180,7 +147,6 @@ const featureData: Record<FeatureId, FeatureContent> = {
     quickLinks: sharedQuickLinks,
     related: [
       { id: "smart-discovery", title: "Smart Discovery", icon: "🔍" },
-      { id: "real-conversations", title: "Real Conversations", icon: "💬" },
     ],
   },
 };

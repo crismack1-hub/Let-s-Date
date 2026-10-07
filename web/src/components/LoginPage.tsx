@@ -38,7 +38,6 @@ const loginQuickNavLinks = defaultQuickNavLinks.map((link) => ({
     settings: "about-settings",
     "smart-discovery": "feature-smart-discovery",
     "verified-profiles": "feature-verified-profiles",
-    "real-conversations": "feature-real-conversations",
     "better-matches": "feature-better-matches",
   }[link.page] || link.page,
 }));
@@ -398,7 +397,7 @@ export function LoginPage({
       </div>
 
       {!messagingOnly && <div className="login-features">
-        <h2>Why Choose Let's Date?</h2>
+        <h2>Why Choose Let's Chat?</h2>
         <div className="features-list">
           <div className="feature">
             <span className="icon">🔍</span>
@@ -422,18 +421,6 @@ export function LoginPage({
               onClick={() => onViewFeature?.("feature-verified-profiles")}
             >
               Learn more →
-            </button>
-          </div>
-          <div className="feature">
-            <span className="icon">💬</span>
-            <h3>Real Conversations</h3>
-            <p>Connect instantly with real-time messaging</p>
-            <button
-              type="button"
-              className="feature-link"
-              onClick={() => onViewFeature?.("real-conversations")}
-            >
-              Open chats →
             </button>
           </div>
           <div className="feature">
