@@ -167,9 +167,9 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
       <div className="signup-container">
         <div className="signup-header">
           <h1 className="app-title">
-            <a className="app-home-link" href="/" aria-label="Let's Chat home">💬 Let's Chat</a>
+            <a className="app-home-link" href="/" aria-label="Connect home">💬 Connect</a>
           </h1>
-          <p className="app-subtitle">Join millions finding love</p>
+          <p className="app-subtitle">We go</p>
         </div>
 
         {step === 1 ? (
@@ -331,7 +331,7 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
         </div>
 
         <div className="signup-features">
-          <h3>Why Join Let's Chat?</h3>
+          <h3>Why Join Connect?</h3>
           <div className="features-showcase">
             <div className="feature-item">
               <span className="feature-icon">🔍</span>

@@ -11,7 +11,7 @@ interface FriendsPageProps {
 type FriendView = "friends" | "discover";
 
 const inviteUrl = "https://let-s-date.vercel.app/";
-const inviteText = `Join me on Let's Chat: ${inviteUrl}`;
+const inviteText = `Join me on Connect: ${inviteUrl}`;
 
 export function FriendsPage({ token, onMessage }: FriendsPageProps) {
   const [view, setView] = useState<FriendView>("friends");
@@ -95,7 +95,7 @@ export function FriendsPage({ token, onMessage }: FriendsPageProps) {
     setError("");
     try {
       if (navigator.share) {
-        await navigator.share({ title: "Let's Chat", text: inviteText, url: inviteUrl });
+        await navigator.share({ title: "Connect", text: inviteText, url: inviteUrl });
       } else {
         await navigator.clipboard.writeText(inviteText);
         setNotice("Invite link copied.");
@@ -128,7 +128,7 @@ export function FriendsPage({ token, onMessage }: FriendsPageProps) {
       <section className="friends-invite" aria-labelledby="friends-invite-title">
         <div className="friends-invite-copy">
           <h2 id="friends-invite-title">Invite someone</h2>
-          <p>Share Let's Chat by email, text, or your social apps.</p>
+          <p>Share Connect by email, text, or your social apps.</p>
         </div>
         <div className="friends-invite-controls">
           <input
@@ -140,7 +140,7 @@ export function FriendsPage({ token, onMessage }: FriendsPageProps) {
           />
           <a
             className="friends-invite-link"
-            href={email ? `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent("Join me on Let's Chat")}&body=${encodeURIComponent(inviteText)}` : undefined}
+            href={email ? `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent("Join me on Connect")}&body=${encodeURIComponent(inviteText)}` : undefined}
             aria-disabled={!email}
             onClick={(event) => { if (!email) event.preventDefault(); }}
           >

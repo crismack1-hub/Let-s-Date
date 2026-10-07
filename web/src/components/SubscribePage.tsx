@@ -41,7 +41,7 @@ export function SubscribePage({ onNavigate }: SubscribePageProps) {
         <span className="subscribe-eyebrow">Plans</span>
         <h1>Pick the plan that fits how you date</h1>
         <p>
-          Both plans give you access to real people on Let's Chat. Premium removes the daily
+          Both plans give you access to real people on Connect. Premium removes the daily
           message cap so you can talk to everyone you match with.
         </p>
         {!isPremium && messagesLeftToday !== Infinity && (

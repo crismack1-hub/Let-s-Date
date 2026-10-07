@@ -286,9 +286,9 @@ export function LoginPage({
         <div className="login-header">
           <h1 className="app-title">
             {messagingOnly ? (
-              "Let's Chat"
+              "Connect"
             ) : (
-              <a className="app-home-link" href="/" aria-label="Let's Chat home">💬 Let's Chat</a>
+              <a className="app-home-link" href="/" aria-label="Connect home">💬 Connect</a>
             )}
           </h1>
           <p className="app-subtitle">
@@ -397,7 +397,7 @@ export function LoginPage({
       </div>
 
       {!messagingOnly && <div className="login-features">
-        <h2>Why Choose Let's Chat?</h2>
+        <h2>Why Choose Connect?</h2>
         <div className="features-list">
           <div className="feature">
             <span className="icon">🔍</span>
