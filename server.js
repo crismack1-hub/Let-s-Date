@@ -518,7 +518,7 @@ app.get('/api/conversations', (req, res) => {
     {
       id: 'cross-platform',
       userId: 'cross-platform',
-      userName: "Let's Date App",
+      userName: "Connect App",
       userPhoto: 'https://api.dicebear.com/7.x/fun-emoji/svg?seed=LetsDate',
       lastMessage: 'Chat with mobile app users',
       lastMessageTime: new Date().toISOString(),

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import "../styles/Navbar.css";
 
-import { useSubscription } from "../hooks/useSubscription";
+import { useSubscription, TESTING_ACCESS } from "../hooks/useSubscription";
 
 interface NavbarProps {
   currentPage: string;
@@ -129,7 +129,15 @@ export function Navbar({
       </div>
 
       <div className="navbar-right">
-        {isPremium ? (
+        {TESTING_ACCESS ? (
+          <button
+            className="plan-pill plan-pill-premium"
+            onClick={() => onNavigate("subscribe")}
+            title="All features are free during testing"
+          >
+            Free testing
+          </button>
+        ) : isPremium ? (
           <button
             className={`plan-pill plan-pill-premium ${currentPage === "subscribe" ? "active" : ""}`}
             onClick={() => onNavigate("subscribe")}

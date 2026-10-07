@@ -26,8 +26,8 @@ export async function sendVerificationCode(
     await transporter.sendMail({
       from,
       to: destination,
-      subject: "Your Let's Chat verification code",
-      text: `Your Let's Chat verification code is ${code}. It expires in 10 minutes.`,
+      subject: "Your Connect verification code",
+      text: `Your Connect verification code is ${code}. It expires in 10 minutes.`,
     });
     return;
   }
@@ -50,7 +50,7 @@ export async function sendVerificationCode(
       body: new URLSearchParams({
         To: destination,
         From: from,
-        Body: `Your Let's Chat verification code is ${code}. It expires in 10 minutes.`,
+        Body: `Your Connect verification code is ${code}. It expires in 10 minutes.`,
       }),
     },
   );

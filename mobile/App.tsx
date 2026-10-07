@@ -329,7 +329,7 @@ export default function App() {
         <ScrollView contentContainerStyle={styles.loginContent}>
           <View style={styles.brandRow}>
             <Text style={styles.brandHeart}>💕</Text>
-            <Text style={styles.brandWord}>Let's Chat</Text>
+            <Text style={styles.brandWord}>Connect</Text>
           </View>
           <Text style={styles.heroHeadline}>Real people. Real connections.</Text>
           <Text style={styles.heroSub}>
@@ -545,7 +545,7 @@ export default function App() {
         <View style={styles.modernHeader}>
           <Pressable
             onPress={() => setCurrentPage("home")}
-            accessibilityLabel="Let's Chat — go to home"
+            accessibilityLabel="Connect — go to home"
             hitSlop={6}
           >
             <Text style={styles.headerLogo}>💕 Messages</Text>

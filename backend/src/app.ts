@@ -53,7 +53,7 @@ export function createApp() {
 
   app.get("/", (_req, res) => {
     res.json({
-      service: "Let's Date backend",
+      service: "Connect backend",
       status: "ok",
       web: "http://localhost:5173",
       endpoints: {

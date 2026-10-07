@@ -2,7 +2,7 @@
 import { Conversation, Message } from "../types";
 import { useRef } from "react";
 import { apiUrl } from "../api";
-import { useSubscription, FREE_DAILY_MESSAGE_LIMIT } from "../hooks/useSubscription";
+import { useSubscription, FREE_DAILY_MESSAGE_LIMIT, TESTING_ACCESS } from "../hooks/useSubscription";
 import { CallOverlay, PhoneIcon, VideoIcon, type CallType } from "./CallOverlay";
 import "../styles/ChatPage.css";
 
@@ -381,7 +381,7 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, onLogout, c
               })}
             </div>
 
-            {!isPremium && (
+            {!isPremium && !TESTING_ACCESS && (
               <div className="chat-plan-banner">
                 {canSendMessage ? (
                   <span>

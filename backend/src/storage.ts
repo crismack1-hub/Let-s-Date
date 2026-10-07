@@ -71,6 +71,12 @@ export const storage = {
     const match = await bcrypt.compare(password, user.passwordHash);
     return match ? user : null;
   },
+  async updatePassword(userId: string, password: string) {
+    const user = users.get(userId);
+    if (!user) return false;
+    user.passwordHash = await bcrypt.hash(password, 10);
+    return true;
+  },
   findUserById(id: string) {
     return users.get(id) ?? null;
   },

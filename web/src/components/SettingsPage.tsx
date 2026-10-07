@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSubscription, FREE_DAILY_MESSAGE_LIMIT } from "../hooks/useSubscription";
+import { useSubscription, FREE_DAILY_MESSAGE_LIMIT, TESTING_ACCESS } from "../hooks/useSubscription";
 import "../styles/SettingsPage.css";
 
 interface SettingsPageProps {
@@ -130,18 +130,24 @@ export function SettingsPage({ userProfile, onSaveSettings, onNavigate }: Settin
             <section className="settings-section">
               <h2 className="settings-section-title">Subscription</h2>
               <p className="settings-section-sub">
-                Manage your plan, see usage, and unlock unlimited messaging.
+                {TESTING_ACCESS
+                  ? "All features are free and unlimited during the testing phase."
+                  : "Manage your plan, see usage, and unlock unlimited messaging."}
               </p>
 
               <div className={`settings-card settings-plan-card ${isPremium ? "premium" : ""}`}>
                 <div className="settings-plan-head">
                   <div>
-                    <span className="settings-plan-tier">{isPremium ? "Premium" : "Free"}</span>
+                    <span className="settings-plan-tier">
+                      {TESTING_ACCESS ? "Free testing access" : isPremium ? "Premium" : "Free"}
+                    </span>
                     <span className="settings-plan-tag">
-                      {isPremium ? "Unlimited messaging" : "$0 / month"}
+                      {TESTING_ACCESS ? "All features unlocked" : isPremium ? "Unlimited messaging" : "$0 / month"}
                     </span>
                   </div>
-                  {isPremium ? (
+                  {TESTING_ACCESS ? (
+                    <span className="settings-pill settings-pill-active">Free</span>
+                  ) : isPremium ? (
                     <span className="settings-pill settings-pill-active">Active</span>
                   ) : (
                     <span className="settings-pill">Current plan</span>
@@ -151,13 +157,13 @@ export function SettingsPage({ userProfile, onSaveSettings, onNavigate }: Settin
                 <div className="settings-plan-stats">
                   <div className="settings-plan-stat">
                     <span className="settings-plan-stat-value">
-                      {isPremium ? "∞" : `${messagesUsedToday}/${FREE_DAILY_MESSAGE_LIMIT}`}
+                      {TESTING_ACCESS || isPremium ? "∞" : `${messagesUsedToday}/${FREE_DAILY_MESSAGE_LIMIT}`}
                     </span>
                     <span className="settings-plan-stat-label">
-                      {isPremium ? "Messages today" : `Today · ${messagesLeftToday} left`}
+                      {TESTING_ACCESS || isPremium ? "Unlimited messages" : `Today · ${messagesLeftToday} left`}
                     </span>
                   </div>
-                  {isPremium && state.renewsAt && (
+                  {!TESTING_ACCESS && isPremium && state.renewsAt && (
                     <div className="settings-plan-stat">
                       <span className="settings-plan-stat-value">
                         {new Date(state.renewsAt).toLocaleDateString()}
@@ -168,7 +174,9 @@ export function SettingsPage({ userProfile, onSaveSettings, onNavigate }: Settin
                 </div>
 
                 <div className="settings-plan-actions">
-                  {isPremium ? (
+                  {TESTING_ACCESS ? (
+                    <span>Enjoy every feature free while we test Connect.</span>
+                  ) : isPremium ? (
                     <>
                       <button
                         type="button"

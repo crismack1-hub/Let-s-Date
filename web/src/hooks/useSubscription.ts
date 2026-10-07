@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 
 export type Plan = "free" | "premium";
+export const TESTING_ACCESS = true;
 
 export interface SubscriptionState {
   plan: Plan;
@@ -92,10 +93,10 @@ export function useSubscription() {
   const isPremium = state.plan === "premium";
   const todays = daily.date === todayKey() ? daily : { date: todayKey(), count: 0 };
   const messagesUsedToday = todays.count;
-  const messagesLeftToday = isPremium
+  const messagesLeftToday = TESTING_ACCESS || isPremium
     ? Infinity
     : Math.max(0, FREE_DAILY_MESSAGE_LIMIT - messagesUsedToday);
-  const canSendMessage = isPremium || messagesUsedToday < FREE_DAILY_MESSAGE_LIMIT;
+  const canSendMessage = TESTING_ACCESS || isPremium || messagesUsedToday < FREE_DAILY_MESSAGE_LIMIT;
 
   const recordMessage = useCallback(() => {
     const current = readDaily();
@@ -110,6 +111,7 @@ export function useSubscription() {
   return {
     state,
     isPremium,
+    testingAccess: TESTING_ACCESS,
     subscribe,
     cancel,
     messagesUsedToday,

@@ -1,4 +1,4 @@
-# Let's Chat
+# Connect
 
 This workspace contains a full-stack messaging platform scaffold for web + mobile.
 
@@ -41,12 +41,19 @@ environment variables on the backend before enabling verification:
   `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM`.
 - SMS: `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, and `TWILIO_FROM_NUMBER`.
 
-Codes expire after 10 minutes, are rate-limited, and are limited to five confirmation attempts.
-Verification codes are never returned by the API.
+Profile-verification codes expire after 10 minutes, are rate-limited, and are limited to five
+confirmation attempts. Profile-verification codes are never returned by the API.
 
 ### Password recovery
 
-The web login includes a development-only phone OTP password reset flow. When running outside production, the OTP is shown in the browser. Password reset requests return `503` in production until password-reset SMS delivery is configured; do not enable the development OTP flow for a public deployment.
+Password resets use the account phone number and the same Twilio SMS configuration. During local
+development, or when `PASSWORD_RESET_TEST_MODE=true` is explicitly enabled, the API returns a
+temporary reset code if SMS delivery is unavailable. Do not enable this testing fallback on a
+public production service.
+
+The web app currently unlocks all features and unlimited messaging for the testing phase. Set
+`TESTING_ACCESS` to `false` in `web/src/hooks/useSubscription.ts` when testing is complete to
+restore the free-tier message limit and subscription UI.
 
 ## Next steps
 
