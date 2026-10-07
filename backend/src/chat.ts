@@ -26,6 +26,7 @@ export function initChatGateway(io: Server) {
 
     socket.join(user.id);
     user.lastSeen = new Date().toISOString();
+    storage.updateLastSeen(user.id, user.lastSeen);
     io.emit("presence", { userId: user.id, online: true, lastSeen: user.lastSeen });
 
     socket.on("join-room", (roomId: string) => {
@@ -55,9 +56,7 @@ export function initChatGateway(io: Server) {
     socket.on("read-receipt", (payload: { messageId: string; roomId: string }) => {
       const message = storage.getConversation(payload.roomId).find((item) => item.id === payload.messageId);
       if (!message) return;
-      if (!message.readBy.includes(user.id)) {
-        message.readBy.push(user.id);
-      }
+      storage.markMessageRead(payload.messageId, payload.roomId, user.id);
       io.to(payload.roomId).emit("read-receipt", { messageId: payload.messageId, userId: user.id });
     });
 
@@ -79,6 +78,7 @@ export function initChatGateway(io: Server) {
 
     socket.on("disconnect", () => {
       user.lastSeen = new Date().toISOString();
+      storage.updateLastSeen(user.id, user.lastSeen);
       io.emit("presence", { userId: user.id, online: false, lastSeen: user.lastSeen });
     });
   });

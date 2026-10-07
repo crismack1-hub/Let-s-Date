@@ -7,10 +7,10 @@ import { sendVerificationCode, type VerificationMethod } from "./verificationDel
 const jwtSecret = process.env.JWT_SECRET ?? "development-secret";
 
 
-const likes = new Map<string, Set<string>>();
-const favorites = new Map<string, Set<string>>();
-const friends = new Map<string, Set<string>>();
-const profileOverrides = new Map<string, Record<string, unknown>>();
+const likes = new Map(storage.listUsers().map(({ id }) => [id, storage.getRelationships(id, "likes")]));
+const favorites = new Map(storage.listUsers().map(({ id }) => [id, storage.getRelationships(id, "favorites")]));
+const friends = new Map(storage.listUsers().map(({ id }) => [id, storage.getRelationships(id, "friends")]));
+const profileOverrides = new Map(storage.listProfileOverrides());
 const verificationChallenges = new Map<
   string,
   { hash: Buffer; salt: string; destination: string; expiresAt: number; lastSentAt: number; attempts: number }
@@ -117,7 +117,7 @@ const router = Router();
 router.use(requireAuth);
 
 router.get("/profile", (req: AuthedRequest, res) => {
-  const overrides = profileOverrides.get(req.userId!) ?? {};
+  const overrides = profileOverrides.get(req.userId!) ?? storage.getProfileOverride(req.userId!) ?? {};
   res.json({
     ...defaultProfile(req.userId!),
     ...overrides,
@@ -133,7 +133,7 @@ router.put("/profile", (req: AuthedRequest, res) => {
   for (const [key, value] of Object.entries(updates)) {
     if (editableFields.has(key)) filtered[key] = value;
   }
-  const current = profileOverrides.get(req.userId!) ?? {};
+  const current = profileOverrides.get(req.userId!) ?? storage.getProfileOverride(req.userId!) ?? {};
   const next = { ...current, ...filtered };
   if (
     typeof filtered.email === "string" &&
@@ -145,6 +145,7 @@ router.put("/profile", (req: AuthedRequest, res) => {
     verificationChallenges.delete(verificationChallengeKey(req.userId!, "email"));
   }
   profileOverrides.set(req.userId!, next);
+  storage.setProfileOverride(req.userId!, next);
   res.json({
     ...defaultProfile(req.userId!),
     ...next,
@@ -161,7 +162,7 @@ router.post("/profile/verification/request", async (req: AuthedRequest, res) => 
   }
 
   const userId = req.userId!;
-  const profile = profileOverrides.get(userId) ?? {};
+  const profile = profileOverrides.get(userId) ?? storage.getProfileOverride(userId) ?? {};
   const destination = method === "email"
     ? (typeof profile.email === "string" ? profile.email.trim().toLowerCase() : "")
     : (storage.findUserById(userId)?.phone ?? "");
@@ -227,7 +228,7 @@ router.post("/profile/verification/confirm", (req: AuthedRequest, res) => {
     return res.status(429).json({ error: "Too many incorrect attempts. Request a new code." });
   }
 
-  const current = profileOverrides.get(userId) ?? {};
+  const current = profileOverrides.get(userId) ?? storage.getProfileOverride(userId) ?? {};
   const currentDestination = method === "email"
     ? (typeof current.email === "string" ? current.email.trim().toLowerCase() : "")
     : (storage.findUserById(userId)?.phone ?? "");
@@ -253,6 +254,7 @@ router.post("/profile/verification/confirm", (req: AuthedRequest, res) => {
   };
   next.verified = next.emailVerified === true || next.phoneVerified === true;
   profileOverrides.set(userId, next);
+  storage.setProfileOverride(userId, next);
   const verified = next.emailVerified === true || next.phoneVerified === true;
   return res.json({ success: true, verified, emailVerified: next.emailVerified === true, phoneVerified: next.phoneVerified === true });
 });
@@ -293,8 +295,9 @@ router.post("/likes", (req: AuthedRequest, res) => {
   if (toUserId === req.userId || !storage.listUsers().some((user) => user.id === toUserId)) {
     return res.status(404).json({ error: "Profile not found" });
   }
-  if (!likes.has(req.userId!)) likes.set(req.userId!, new Set());
+  if (!likes.has(req.userId!)) likes.set(req.userId!, storage.getRelationships(req.userId!, "likes"));
   likes.get(req.userId!)!.add(toUserId);
+  storage.addRelationship(req.userId!, "likes", toUserId);
   res.json({ ok: true, toUserId });
 });
 
@@ -339,11 +342,13 @@ router.get("/matches", (req: AuthedRequest, res) => {
 
 router.post("/matches/:id/favorite", (req: AuthedRequest, res) => {
   const targetUserId = parseMatchId(req.params.id);
-  if (!favorites.has(req.userId!)) favorites.set(req.userId!, new Set());
+  if (!favorites.has(req.userId!)) favorites.set(req.userId!, storage.getRelationships(req.userId!, "favorites"));
   const set = favorites.get(req.userId!)!;
   const wasFavorited = set.has(targetUserId);
   if (wasFavorited) set.delete(targetUserId);
   else set.add(targetUserId);
+  if (wasFavorited) storage.removeRelationship(req.userId!, "favorites", targetUserId);
+  else storage.addRelationship(req.userId!, "favorites", targetUserId);
   res.json({ ok: true, favorited: !wasFavorited });
 });
 
@@ -351,6 +356,8 @@ router.delete("/matches/:id", (req: AuthedRequest, res) => {
   const targetUserId = parseMatchId(req.params.id);
   likes.get(req.userId!)?.delete(targetUserId);
   favorites.get(req.userId!)?.delete(targetUserId);
+  storage.removeRelationship(req.userId!, "likes", targetUserId);
+  storage.removeRelationship(req.userId!, "favorites", targetUserId);
   res.json({ ok: true });
 });
 
@@ -365,13 +372,15 @@ router.post("/friends/:id", (req: AuthedRequest, res) => {
     return res.status(404).json({ error: "Profile not found" });
   }
 
-  if (!friends.has(req.userId!)) friends.set(req.userId!, new Set<string>());
+  if (!friends.has(req.userId!)) friends.set(req.userId!, storage.getRelationships(req.userId!, "friends"));
   friends.get(req.userId!)!.add(friendId);
+  storage.addRelationship(req.userId!, "friends", friendId);
   return res.json({ ok: true, friendId });
 });
 
 router.delete("/friends/:id", (req: AuthedRequest, res) => {
   friends.get(req.userId!)?.delete(req.params.id);
+  storage.removeRelationship(req.userId!, "friends", req.params.id);
   res.json({ ok: true });
 });
 
