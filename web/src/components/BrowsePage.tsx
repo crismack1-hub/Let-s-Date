@@ -70,13 +70,6 @@ const links: BrowseLink[] = [
     infoPage: "feature-verified-profiles",
     description: "Browse only identity-verified, real human profiles.",
   },
-  {
-    icon: "💞",
-    title: "Better Matches",
-    page: "better-matches",
-    infoPage: "feature-better-matches",
-    description: "New people, ranked by compatibility — score, online, interests.",
-  },
 ];
 
 export function BrowsePage({ onNavigate }: BrowsePageProps) {

@@ -449,7 +449,7 @@ export function ProfilePage({ token, user, onProfileUpdated }: ProfilePageProps)
               <div className="form-group">
                 <label>Interests</label>
                 <p className="interests-hint">
-                  Pick what you actually enjoy — these surface in Smart Discovery and Better Matches.
+                  Pick what you actually enjoy — these help you find people with shared interests.
                 </p>
                 <div className="interests-chips">
                   {AVAILABLE_INTERESTS.map((interest) => {

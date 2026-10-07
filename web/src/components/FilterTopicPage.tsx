@@ -54,7 +54,7 @@ const topics: Record<FilterTopicId, TopicContent> = {
       },
       {
         heading: "Boost on overlap",
-        text: "On the Better Matches page, the more interests overlap, the higher the compatibility score (up to +15 points). Filtering and ranking work together.",
+        text: "The more interests overlap, the easier it is to find a natural conversation starter. Filtering helps surface profiles that share your interests.",
       },
       {
         heading: "Easy to widen",

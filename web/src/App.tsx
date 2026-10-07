@@ -17,7 +17,6 @@ import { FeaturePage } from "./components/FeaturePage";
 import { FeatureOverviewPage } from "./components/FeatureOverviewPage";
 import { SmartDiscoveryPage } from "./components/SmartDiscoveryPage";
 import { VerifiedProfilesPage } from "./components/VerifiedProfilesPage";
-import { BetterMatchesPage } from "./components/BetterMatchesPage";
 import { SubscribePage } from "./components/SubscribePage";
 import { TrustTopicPage, type TrustTopicId } from "./components/TrustTopicPage";
 import { AdvancedFilteringPage } from "./components/AdvancedFilteringPage";
@@ -238,8 +237,6 @@ function App() {
         return <SmartDiscoveryPage token={authToken} />;
       case "verified-profiles":
         return <VerifiedProfilesPage token={authToken} onNavigate={setCurrentPage} />;
-      case "better-matches":
-        return <BetterMatchesPage token={authToken} onNavigate={setCurrentPage} />;
       case "subscribe":
         return <SubscribePage onNavigate={setCurrentPage} />;
       case "trust-trusted-members":
@@ -285,13 +282,11 @@ function App() {
         );
       case "feature-smart-discovery":
       case "feature-verified-profiles":
-      case "feature-better-matches":
         return (
           <FeaturePage
             feature={currentPage.replace("feature-", "") as
               | "smart-discovery"
-              | "verified-profiles"
-              | "better-matches"}
+              | "verified-profiles"}
             onBack={() => setCurrentPage("features")}
             onNavigate={setCurrentPage}
             token={authToken}

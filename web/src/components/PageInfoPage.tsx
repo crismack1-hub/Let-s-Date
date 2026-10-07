@@ -64,7 +64,6 @@ const content: Record<PageInfoId, InfoContent> = {
       },
     ],
     primaryCta: { label: "Open Matches", page: "matches" },
-    secondaryCta: { label: "View Better Matches", page: "better-matches" },
   },
   likes: {
     icon: "💕",
@@ -129,7 +128,7 @@ const content: Record<PageInfoId, InfoContent> = {
       },
       {
         heading: "Verification",
-        text: "Get the ✓ verified badge by completing a quick identity + photo check. Verified profiles feature in the Verified Profiles feed and rank higher in Better Matches.",
+        text: "Get the ✓ verified badge by completing a quick identity + photo check. Verified profiles feature in the Verified Profiles feed.",
       },
     ],
     primaryCta: { label: "Open Profile", page: "profile" },

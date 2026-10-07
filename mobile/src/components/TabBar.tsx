@@ -7,8 +7,7 @@ export type TabId =
   | "settings"
   | "web"
   | "smart-discovery"
-  | "verified-profiles"
-  | "better-matches";
+  | "verified-profiles";
 
 interface TabBarProps {
   active: TabId;

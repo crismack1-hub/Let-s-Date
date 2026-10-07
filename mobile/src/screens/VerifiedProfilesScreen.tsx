@@ -117,9 +117,6 @@ export function VerifiedProfilesScreen({ token, backendUrl, onNavigate }: Props)
         <Pressable style={styles.crossBtn} onPress={() => onNavigate("smart-discovery")}>
           <Text style={styles.crossBtnText}>🔍 Smart Discovery →</Text>
         </Pressable>
-        <Pressable style={styles.crossBtn} onPress={() => onNavigate("better-matches")}>
-          <Text style={styles.crossBtnText}>💞 Better Matches →</Text>
-        </Pressable>
       </View>
     </ScrollView>
   );

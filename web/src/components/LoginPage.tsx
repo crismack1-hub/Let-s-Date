@@ -38,7 +38,6 @@ const loginQuickNavLinks = defaultQuickNavLinks.map((link) => ({
     settings: "about-settings",
     "smart-discovery": "feature-smart-discovery",
     "verified-profiles": "feature-verified-profiles",
-    "better-matches": "feature-better-matches",
   }[link.page] || link.page,
 }));
 
@@ -292,7 +291,7 @@ export function LoginPage({
             )}
           </h1>
           <p className="app-subtitle">
-            {messagingOnly ? "Real connection starts with a hello." : "Find your perfect match"}
+            {messagingOnly ? "Real connection starts with a hello." : "Bho! Bho!"}
           </p>
         </div>
 
@@ -419,18 +418,6 @@ export function LoginPage({
               type="button"
               className="feature-link"
               onClick={() => onViewFeature?.("feature-verified-profiles")}
-            >
-              Learn more →
-            </button>
-          </div>
-          <div className="feature">
-            <span className="icon">💞</span>
-            <h3>Better Matches</h3>
-            <p>Real people, real chemistry — built on shared interests</p>
-            <button
-              type="button"
-              className="feature-link"
-              onClick={() => onViewFeature?.("feature-better-matches")}
             >
               Learn more →
             </button>

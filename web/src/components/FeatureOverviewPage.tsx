@@ -18,12 +18,6 @@ const features = [
     description: "Connect only with authenticated profiles to keep your matches real.",
     icon: "🛡️",
   },
-  {
-    id: "better-matches",
-    title: "Better Matches",
-    description: "Real compatibility based on shared values and interests for more meaningful matches.",
-    icon: "🎯",
-  },
 ];
 
 export function FeatureOverviewPage({ onViewFeature }: FeatureOverviewPageProps) {

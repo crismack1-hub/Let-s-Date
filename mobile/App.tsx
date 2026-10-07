@@ -20,7 +20,6 @@ import { TabBar, type TabId } from "./src/components/TabBar";
 import { CallOverlay, type CallType } from "./src/components/CallOverlay";
 import { SmartDiscoveryScreen } from "./src/screens/SmartDiscoveryScreen";
 import { VerifiedProfilesScreen } from "./src/screens/VerifiedProfilesScreen";
-import { BetterMatchesScreen } from "./src/screens/BetterMatchesScreen";
 
 declare const process:
   | {
@@ -87,13 +86,6 @@ const featureLinks: FeatureLink[] = [
     title: "Messages",
     description: "Real-time messaging with real humans — no bots, no AI.",
     url: "https://let-s-date.vercel.app/messages",
-  },
-  {
-    id: "better-matches",
-    icon: "💞",
-    title: "Better Matches",
-    description: "New people, ranked by compatibility you can see.",
-    url: "https://letsdateapp.com/features/better-matches",
   },
 ];
 
@@ -688,15 +680,6 @@ export default function App() {
     if (currentPage === "verified-profiles") {
       return (
         <VerifiedProfilesScreen
-          token={token}
-          backendUrl={BACKEND_URL}
-          onNavigate={setCurrentPage}
-        />
-      );
-    }
-    if (currentPage === "better-matches") {
-      return (
-        <BetterMatchesScreen
           token={token}
           backendUrl={BACKEND_URL}
           onNavigate={setCurrentPage}

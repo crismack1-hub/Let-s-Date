@@ -357,18 +357,6 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
                 Learn more →
               </button>
             </div>
-            <div className="feature-item">
-              <span className="feature-icon">💞</span>
-              <h4>Better Matches</h4>
-              <p>Real people, real chemistry — built on shared interests</p>
-              <button
-                type="button"
-                className="feature-link"
-                onClick={() => onViewFeature?.("feature-better-matches")}
-              >
-                Learn more →
-              </button>
-            </div>
           </div>
         </div>
       </div>

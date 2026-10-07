@@ -1,9 +1,6 @@
 import "../styles/FeaturePage.css";
 
-type FeatureId =
-  | "smart-discovery"
-  | "verified-profiles"
-  | "better-matches";
+type FeatureId = "smart-discovery" | "verified-profiles";
 
 interface FeaturePageProps {
   feature: FeatureId;
@@ -85,7 +82,6 @@ const featureData: Record<FeatureId, FeatureContent> = {
     quickLinks: sharedQuickLinks,
     related: [
       { id: "verified-profiles", title: "Verified Profiles", icon: "🛡️" },
-      { id: "better-matches", title: "Better Matches", icon: "💞" },
     ],
   },
   "verified-profiles": {
@@ -112,37 +108,6 @@ const featureData: Record<FeatureId, FeatureContent> = {
     ctas: [
       { label: "Open Verified Profiles", page: "verified-profiles", variant: "primary", signedOutLabel: "Sign in to view verified profiles" },
       { label: "Verify your profile", page: "profile", variant: "secondary", signedOutLabel: "Sign in to verify your profile" },
-    ],
-    quickLinks: sharedQuickLinks,
-    related: [
-      { id: "smart-discovery", title: "Smart Discovery", icon: "🔍" },
-      { id: "better-matches", title: "Better Matches", icon: "💞" },
-    ],
-  },
-  "better-matches": {
-    title: "Better Matches",
-    subtitle: "Genuine compatibility for stronger connections.",
-    intro:
-      "Match with people who share your values, interests, and long-term goals through transparent, people-first recommendations.",
-    sections: [
-      {
-        heading: "Compatibility Scoring",
-        text: "Your shared values, conversation style, and relationship goals help surface better matches.",
-      },
-      {
-        heading: "Personality Insights",
-        text: "Understand how your personality fits with other members for more meaningful matches.",
-      },
-      {
-        heading: "Continuous Learning",
-        text: "Recommendations adapt as you interact with real people and give feedback.",
-      },
-    ],
-    humanFocus:
-      "Better Matches is grounded in real human connection — recommendations are based on your interactions with real people, not artificial profiles.",
-    ctas: [
-      { label: "Open Better Matches", page: "better-matches", variant: "primary", signedOutLabel: "Sign in to see your better matches" },
-      { label: "Update your profile", page: "profile", variant: "secondary", signedOutLabel: "Sign in to update your profile" },
     ],
     quickLinks: sharedQuickLinks,
     related: [

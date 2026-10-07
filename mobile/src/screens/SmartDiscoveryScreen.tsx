@@ -212,9 +212,6 @@ export function SmartDiscoveryScreen({ token, backendUrl, onNavigate }: Props) {
         <Pressable style={styles.crossBtn} onPress={() => onNavigate("verified-profiles")}>
           <Text style={styles.crossBtnText}>🛡️ Verified Profiles →</Text>
         </Pressable>
-        <Pressable style={styles.crossBtn} onPress={() => onNavigate("better-matches")}>
-          <Text style={styles.crossBtnText}>💞 Better Matches →</Text>
-        </Pressable>
       </View>
     </ScrollView>
   );

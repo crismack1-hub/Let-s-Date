@@ -84,13 +84,6 @@ export function Navbar({
         </button>
 
         <button
-          className={`nav-link ${currentPage === "better-matches" ? "active" : ""}`}
-          onClick={() => onNavigate("better-matches")}
-        >
-          💞 Better Matches
-        </button>
-
-        <button
           className={`nav-link ${currentPage === "features" ? "active" : ""}`}
           onClick={() => onNavigate("features")}
         >
