@@ -35,12 +35,15 @@ likes, favorites, friends, messages, groups, and statuses are persisted in a pri
 database. Passwords are stored as bcrypt hashes, not plaintext. Users access their own data through
 authenticated app APIs; the database file is not exposed for download.
 
+The production web client connects to `https://lets-date-backend.onrender.com`. Set
+`VITE_API_URL` in the Vercel project environment if the backend uses a different public URL, then
+redeploy the web project so the value is included in its build.
+
 By default, the SQLite file is `backend/data/connect.sqlite` and is excluded from Git. Set
 `DATABASE_PATH` to choose a different location. Local data survives backend restarts. The hosted
-Render service is currently on its free plan, which has ephemeral storage; SQLite data on that
-service can be lost when the service restarts or is redeployed. Production data will only survive
-restarts after configuring a paid persistent disk mounted at `/var/data` and setting
-`DATABASE_PATH=/var/data/connect.sqlite`.
+Render backend uses a paid persistent disk mounted at `/var/data`, with
+`DATABASE_PATH=/var/data/connect.sqlite`, so accounts, password hashes, and other SQLite data
+survive backend restarts and redeploys. The persistent disk and paid service plan may incur charges.
 
 ### Email and phone verification
 
