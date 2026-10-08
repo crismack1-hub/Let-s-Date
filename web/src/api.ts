@@ -1,5 +1,5 @@
 const DEFAULT_API_URL = "http://localhost:4000";
-const PRODUCTION_API_URL = "https://lets-date-backend.onrender.com";
+const PRODUCTION_API_URL = "https://lets-date-backend-uf7o.onrender.com";
 
 export const API_BASE_URL =
   (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/$/, "") ||

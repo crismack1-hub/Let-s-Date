@@ -35,7 +35,7 @@ likes, favorites, friends, messages, groups, and statuses are persisted in a pri
 database. Passwords are stored as bcrypt hashes, not plaintext. Users access their own data through
 authenticated app APIs; the database file is not exposed for download.
 
-The production web client connects to `https://lets-date-backend.onrender.com`. Set
+The production web client connects to `https://lets-date-backend-uf7o.onrender.com`. Set
 `VITE_API_URL` in the Vercel project environment if the backend uses a different public URL, then
 redeploy the web project so the value is included in its build.
 
