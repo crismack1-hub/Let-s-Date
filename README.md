@@ -23,10 +23,12 @@ This workspace contains a full-stack messaging platform scaffold for web + mobil
 
 ## Getting started
 
-1. `npm install`
-2. `npm run dev:backend`
-3. `npm run dev:web`
-4. `npm run dev:mobile`
+1. `npm install --prefix backend`
+2. `npm install --prefix web`
+3. For the mobile app, also run `npm install --prefix mobile`.
+4. `npm run dev:backend`
+5. In another terminal, run `npm run dev:web`.
+6. To start the mobile app instead, run `npm run dev:mobile`.
 
 ## Notes
 
