@@ -268,13 +268,13 @@ export function LoginPage({
         <div className="login-header">
           <h1 className="app-title">
             {messagingOnly ? (
-              "Connect"
+              "Hi!"
             ) : (
-              <a className="app-home-link" href="/" aria-label="Connect home">💬 Connect</a>
+              <a className="app-home-link" href="/" aria-label="Hi! home">✦ Hi!</a>
             )}
           </h1>
           <p className="app-subtitle">
-            {messagingOnly ? "Real connection starts with a hello." : "Bho! Bho!"}
+            {messagingOnly ? "Real connection starts with a hello." : "Meet someone worth saying hello to."}
           </p>
         </div>
 
@@ -340,7 +340,7 @@ export function LoginPage({
 
         <div className="login-footer">
           <p>
-            New to Connect?{" "}
+            New here?{" "}
             <button
               type="button"
               className="link-btn"

@@ -1,4 +1,4 @@
-# Connect
+# Hi!
 
 This workspace contains a full-stack messaging platform scaffold for web + mobile.
 

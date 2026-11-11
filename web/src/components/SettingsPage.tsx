@@ -175,7 +175,7 @@ export function SettingsPage({ userProfile, onSaveSettings, onNavigate }: Settin
 
                 <div className="settings-plan-actions">
                   {TESTING_ACCESS ? (
-                    <span>Enjoy every feature free while we test Connect.</span>
+                    <span>Enjoy every feature free while we test the app.</span>
                   ) : isPremium ? (
                     <>
                       <button
@@ -244,7 +244,7 @@ export function SettingsPage({ userProfile, onSaveSettings, onNavigate }: Settin
           {activeTab === "notifications" && (
             <section className="settings-section">
               <h2 className="settings-section-title">Notifications</h2>
-              <p className="settings-section-sub">Choose how Connect reaches you.</p>
+              <p className="settings-section-sub">Choose how Hi! reaches you.</p>
 
               <div className="settings-card settings-row-list">
                 <Toggle

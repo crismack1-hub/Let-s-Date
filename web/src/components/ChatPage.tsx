@@ -1,6 +1,5 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Conversation, Message } from "../types";
-import { useRef } from "react";
 import { apiUrl } from "../api";
 import { useSubscription, FREE_DAILY_MESSAGE_LIMIT, TESTING_ACCESS } from "../hooks/useSubscription";
 import { CallOverlay, PhoneIcon, VideoIcon, type CallType } from "./CallOverlay";
@@ -17,6 +16,7 @@ interface ChatPageProps {
 }
 
 const CROSS_PLATFORM = "cross-platform";
+const MAX_ATTACHMENT_SIZE = 512 * 1024;
 
 export function ChatPage({ token, socket, currentUserId, onNavigate, onLogout, chatTarget, onChatTargetConsumed }: ChatPageProps) {
   const { isPremium, canSendMessage, recordMessage, messagesLeftToday } = useSubscription();
@@ -31,9 +31,13 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, onLogout, c
   const [isRecording, setIsRecording] = useState(false);
   const [showMobileConversationList, setShowMobileConversationList] = useState(true);
   const [voiceError, setVoiceError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [attachmentError, setAttachmentError] = useState<string | null>(null);
+  const [sendingAttachment, setSendingAttachment] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const recordingStartedAtRef = useRef(0);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const messages = selectedConversation ? messageBuckets[selectedConversation] ?? [] : [];
   const activeConv = conversations.find((c) => c.userId === selectedConversation);
 
@@ -173,6 +177,66 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, onLogout, c
     recordMessage();
   };
 
+  const handleSelectFile = (file?: File) => {
+    setAttachmentError(null);
+    if (!file) return;
+    if (file.size > MAX_ATTACHMENT_SIZE) {
+      setSelectedFile(null);
+      setAttachmentError("Attachments must be 512 KB or smaller.");
+      return;
+    }
+    setSelectedFile(file);
+  };
+
+  const handleSendFile = async () => {
+    if (!selectedFile || !socket || !selectedConversation || !canSendMessage || sendingAttachment) return;
+
+    setSendingAttachment(true);
+    setAttachmentError(null);
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === "string") resolve(reader.result);
+          else reject(new Error("The selected file could not be read."));
+        };
+        reader.onerror = () => reject(reader.error ?? new Error("The selected file could not be read."));
+        reader.readAsDataURL(selectedFile);
+      });
+      const name = selectedFile.name.replace(/[\\/\0-\x1f\x7f]/g, "_").slice(0, 255) || "attachment";
+
+      socket.timeout(10000).emit(
+        "direct-message",
+        {
+          to: selectedConversation,
+          roomId: getRoomId(),
+          body: `Shared a file: ${name}`,
+          type: "file",
+          attachment: {
+            name,
+            mimeType: selectedFile.type || "application/octet-stream",
+            size: selectedFile.size,
+            dataUrl,
+          },
+        },
+        (error: Error | null, response?: { ok: boolean; error?: string }) => {
+          setSendingAttachment(false);
+          if (error || !response?.ok) {
+            setAttachmentError(response?.error ?? "The file could not be sent. Please try again.");
+            return;
+          }
+          recordMessage();
+          setSelectedFile(null);
+          if (fileInputRef.current) fileInputRef.current.value = "";
+        },
+      );
+    } catch (error) {
+      console.error("File attachment could not be read:", error);
+      setAttachmentError("The selected file could not be read. Please choose it again.");
+      setSendingAttachment(false);
+    }
+  };
+
   const handleStartVoiceNote = async () => {
     if (!socket || !selectedConversation || !canSendMessage || isRecording) return;
     setVoiceError(null);
@@ -230,6 +294,13 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, onLogout, c
   return (
     <div className={`chat-page ${showMobileConversationList ? "mobile-showing-list" : "mobile-showing-thread"}`}>
       <div className="chat-sidebar">
+        <div className="chat-brand">
+          <span className="chat-brand-mark" aria-hidden="true">✦</span>
+          <div>
+            <strong>Hi!</strong>
+            <span>Good chemistry starts here</span>
+          </div>
+        </div>
         <div className="search-box">
           <input
             type="text"
@@ -369,6 +440,20 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, onLogout, c
                           <span className="voice-note-label">Voice note</span>
                           <audio controls src={msg.audioUrl} />
                         </div>
+                      ) : msg.type === "file" && msg.attachment ? (
+                        <a
+                          className="chat-file-attachment"
+                          href={msg.attachment.dataUrl}
+                          download={msg.attachment.name}
+                        >
+                          <span className="chat-file-icon" aria-hidden="true">↧</span>
+                          <span className="chat-file-details">
+                            <strong>{msg.attachment.name}</strong>
+                            <small>
+                              {msg.attachment.mimeType} · {(msg.attachment.size / 1024).toFixed(0)} KB
+                            </small>
+                          </span>
+                        </a>
                       ) : (
                         <p>{msg.body}</p>
                       )}
@@ -411,6 +496,24 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, onLogout, c
             )}
 
             <div className="message-input-container">
+              <input
+                ref={fileInputRef}
+                className="chat-file-input"
+                type="file"
+                accept="*/*"
+                onChange={(event) => handleSelectFile(event.target.files?.[0])}
+                aria-label="Choose a file attachment"
+              />
+              <button
+                type="button"
+                className="chat-attach-btn"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={!canSendMessage || sendingAttachment}
+                title="Attach any file type (up to 512 KB)"
+                aria-label="Attach a file"
+              >
+                +
+              </button>
               <button
                 type="button"
                 className={`voice-note-btn ${isRecording ? "recording" : ""}`}
@@ -423,22 +526,43 @@ export function ChatPage({ token, socket, currentUserId, onNavigate, onLogout, c
               </button>
               <input
                 type="text"
-                placeholder={
+                placeholder={selectedFile
+                  ? `Ready to share ${selectedFile.name}`
+                  : (
                   canSendMessage
                     ? "Say something nice…"
                     : "Daily limit reached — upgrade to send more"
-                }
+                  )}
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                disabled={!canSendMessage}
+                disabled={!canSendMessage || Boolean(selectedFile)}
                 onKeyPress={(e) => {
                   if (e.key === "Enter") handleSendMessage();
                 }}
               />
-              <button onClick={handleSendMessage} disabled={!canSendMessage}>
-                Send
+              <button
+                onClick={selectedFile ? handleSendFile : handleSendMessage}
+                disabled={!canSendMessage || sendingAttachment}
+              >
+                {sendingAttachment ? "Sending…" : selectedFile ? "Share file" : "Send"}
               </button>
             </div>
+            {selectedFile && (
+              <div className="chat-attachment-note">
+                Any file type · up to 512 KB
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setAttachmentError(null);
+                    if (fileInputRef.current) fileInputRef.current.value = "";
+                  }}
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+            {attachmentError && <div className="voice-note-error" role="alert">{attachmentError}</div>}
             {voiceError && <div className="voice-note-error">{voiceError}</div>}
           </>
         )}

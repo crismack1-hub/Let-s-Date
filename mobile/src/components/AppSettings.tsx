@@ -36,7 +36,7 @@ export function AppSettings({ onLogout, onBackToApp }: AppSettingsProps) {
         <Text style={styles.headerTitle}>⚙️ Settings</Text>
         <Pressable
           onPress={onBackToApp}
-          accessibilityLabel="Connect — go to home"
+          accessibilityLabel="Hi! — go to home"
           hitSlop={6}
         >
           <Text style={styles.headerLogo}>💕</Text>
@@ -143,7 +143,7 @@ export function AppSettings({ onLogout, onBackToApp }: AppSettingsProps) {
 
             <View style={styles.card}>
               <Text style={styles.cardTitle}>📱 Version</Text>
-              <Text style={styles.cardText}>Connect v1.0.0</Text>
+              <Text style={styles.cardText}>Hi! v1.0.0</Text>
             </View>
 
             <View style={styles.card}>

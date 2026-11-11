@@ -1,9 +1,17 @@
 import { Server } from "socket.io";
-import { storage } from "./storage";
+import { storage, type Message } from "./storage";
 import jwt from "jsonwebtoken";
 import { randomUUID } from "crypto";
 
 const jwtSecret = process.env.JWT_SECRET ?? "development-secret";
+const MAX_ATTACHMENT_SIZE = 512 * 1024;
+const isMessageType = (value: unknown): value is Message["type"] =>
+  value === "text" ||
+  value === "voice-note" ||
+  value === "image" ||
+  value === "audio" ||
+  value === "video" ||
+  value === "file";
 
 export function initChatGateway(io: Server) {
   io.use((socket, next) => {
@@ -33,20 +41,89 @@ export function initChatGateway(io: Server) {
       socket.join(roomId);
     });
 
-    socket.on("direct-message", (payload: { to: string; body: string; type?: string; roomId: string; encryptedPayload: string }) => {
+    socket.on(
+      "direct-message",
+      (
+        payload: {
+          to?: unknown;
+          body?: unknown;
+          type?: unknown;
+          roomId?: unknown;
+          attachment?: unknown;
+        },
+        acknowledge?: (response: { ok: boolean; error?: string }) => void,
+      ) => {
+      const reject = (error: string) => acknowledge?.({ ok: false, error });
+      if (
+        !payload ||
+        typeof payload.to !== "string" ||
+        typeof payload.roomId !== "string" ||
+        typeof payload.body !== "string"
+      ) {
+        reject("Invalid message.");
+        return;
+      }
+
+      const requestedType = payload.type ?? "text";
+      if (!isMessageType(requestedType)) {
+        reject("Unsupported message type.");
+        return;
+      }
+      const type = requestedType;
+
+      let attachment: Message["attachment"];
+      if (type === "file") {
+        const candidate = payload.attachment as Record<string, unknown> | undefined;
+        if (
+          !candidate ||
+          typeof candidate.name !== "string" ||
+          typeof candidate.mimeType !== "string" ||
+          typeof candidate.size !== "number" ||
+          typeof candidate.dataUrl !== "string"
+        ) {
+          reject("Invalid file attachment.");
+          return;
+        }
+
+        const name = candidate.name.replace(/[\\/\0-\x1f\x7f]/g, "_").slice(0, 255);
+        const dataMatch = /^data:[^,]*;base64,([A-Za-z0-9+/]*={0,2})$/.exec(candidate.dataUrl);
+        if (
+          !name ||
+          candidate.mimeType.length > 127 ||
+          !Number.isInteger(candidate.size) ||
+          candidate.size < 0 ||
+          candidate.size > MAX_ATTACHMENT_SIZE ||
+          candidate.dataUrl.length > Math.ceil(MAX_ATTACHMENT_SIZE * 4 / 3) + 256 ||
+          !dataMatch ||
+          Buffer.from(dataMatch[1], "base64").length !== candidate.size
+        ) {
+          reject("Attachments must be valid files no larger than 512 KB.");
+          return;
+        }
+
+        attachment = {
+          name,
+          mimeType: candidate.mimeType || "application/octet-stream",
+          size: candidate.size,
+          dataUrl: candidate.dataUrl,
+        };
+      }
+
       const message = {
         id: randomUUID(),
         from: user.id,
         to: payload.to,
-        body: payload.body,
+        body: type === "file" && attachment ? `Shared a file: ${attachment.name}` : payload.body,
         roomId: payload.roomId,
         createdAt: new Date().toISOString(),
-        type: (payload.type as any) ?? "text",
+        type,
+        ...(attachment ? { attachment } : {}),
         deliveredTo: [user.id],
         readBy: [user.id],
       };
       storage.addMessage(message);
       io.to(payload.roomId).emit("message", message);
+      acknowledge?.({ ok: true });
     });
 
     socket.on("typing", (payload: { roomId: string; isTyping: boolean }) => {

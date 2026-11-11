@@ -167,7 +167,7 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
       <div className="signup-container">
         <div className="signup-header">
           <h1 className="app-title">
-            <a className="app-home-link" href="/" aria-label="Connect home">💬 Connect</a>
+            <a className="app-home-link" href="/" aria-label="Hi! home">✦ Hi!</a>
           </h1>
           <p className="app-subtitle">We go</p>
         </div>
@@ -331,7 +331,7 @@ export function SignUpPage({ onSignUp, onBackToLogin, onViewFeature, isLoading }
         </div>
 
         <div className="signup-features">
-          <h3>Why Join Connect?</h3>
+          <h3>Why Join Hi!?</h3>
           <div className="features-showcase">
             <div className="feature-item">
               <span className="feature-icon">🔍</span>

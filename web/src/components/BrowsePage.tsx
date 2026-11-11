@@ -78,7 +78,7 @@ export function BrowsePage({ onNavigate }: BrowsePageProps) {
       <header className="browse-hero">
         <span className="browse-eyebrow">All sections</span>
         <h1>Browse the app</h1>
-        <p>Every page in Connect — pick where you want to go.</p>
+        <p>Every page in Hi! — pick where you want to go.</p>
       </header>
 
       <ul className="browse-grid">

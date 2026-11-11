@@ -9,7 +9,7 @@ export function SubscribePage({ onNavigate }: SubscribePageProps) {
     <div className="subscribe-page">
       <header className="subscribe-hero">
         <span className="subscribe-eyebrow">Testing phase</span>
-        <h1>Everything is free on Connect</h1>
+        <h1>Everything is free on Hi!</h1>
         <p>
           Explore every feature, send unlimited messages, and test the full experience. There are no
           subscriptions, tokens, or charges during testing.

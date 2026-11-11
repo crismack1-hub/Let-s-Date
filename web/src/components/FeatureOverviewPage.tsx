@@ -15,7 +15,7 @@ const features = [
   {
     id: "verified-profiles",
     title: "Verified Profiles",
-    description: "Connect only with authenticated profiles to keep your matches real.",
+    description: "Only match with authenticated profiles on Hi! to keep connections real.",
     icon: "🛡️",
   },
 ];
@@ -26,7 +26,7 @@ export function FeatureOverviewPage({ onViewFeature }: FeatureOverviewPageProps)
       <div className="feature-page-hero">
         <h1>Real People. Real Connections.</h1>
         <p>
-          Connect is 100% human — no bots, no AI. Just real people looking for genuine
+          Hi! is 100% human — no bots, no AI. Just real people looking for genuine
           conversation and meaningful matches.
         </p>
       </div>

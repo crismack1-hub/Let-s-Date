@@ -22,7 +22,13 @@ export type Message = {
   body: string;
   roomId: string;
   createdAt: string;
-  type: "text" | "image" | "audio" | "video" | "file";
+  type: "text" | "image" | "audio" | "video" | "file" | "voice-note";
+  attachment?: {
+    name: string;
+    mimeType: string;
+    size: number;
+    dataUrl: string;
+  };
   deliveredTo: string[];
   readBy: string[];
 };
@@ -71,6 +77,7 @@ database.exec(`
     room_id TEXT NOT NULL,
     created_at TEXT NOT NULL,
     message_type TEXT NOT NULL,
+    attachment TEXT,
     delivered_to TEXT NOT NULL,
     read_by TEXT NOT NULL
   );
@@ -101,6 +108,11 @@ database.exec(`
   );
 `);
 
+const messageColumns = database.pragma("table_info(messages)") as Array<{ name: string }>;
+if (!messageColumns.some((column) => column.name === "attachment")) {
+  database.exec("ALTER TABLE messages ADD COLUMN attachment TEXT");
+}
+
 const users = new Map<string, User>();
 for (const row of database.prepare("SELECT * FROM users").all() as Array<Record<string, unknown>>) {
   const user: User = {
@@ -124,6 +136,9 @@ const messages = (database.prepare("SELECT * FROM messages ORDER BY created_at")
     roomId: String(row.room_id),
     createdAt: String(row.created_at),
     type: row.message_type as Message["type"],
+    ...(typeof row.attachment === "string"
+      ? { attachment: JSON.parse(row.attachment) as Message["attachment"] }
+      : {}),
     deliveredTo: JSON.parse(String(row.delivered_to)) as string[],
     readBy: JSON.parse(String(row.read_by)) as string[],
   }));
@@ -209,12 +224,13 @@ export const storage = {
   addMessage(message: Message) {
     database.prepare(`
       INSERT INTO messages (
-        id, sender_id, recipient_id, body, room_id, created_at, message_type, delivered_to, read_by
+        id, sender_id, recipient_id, body, room_id, created_at, message_type, attachment, delivered_to, read_by
       ) VALUES (
-        @id, @from, @to, @body, @roomId, @createdAt, @type, @deliveredTo, @readBy
+        @id, @from, @to, @body, @roomId, @createdAt, @type, @attachment, @deliveredTo, @readBy
       )
     `).run({
       ...message,
+      attachment: message.attachment ? JSON.stringify(message.attachment) : null,
       deliveredTo: JSON.stringify(message.deliveredTo),
       readBy: JSON.stringify(message.readBy),
     });

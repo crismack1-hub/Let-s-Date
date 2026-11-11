@@ -44,9 +44,15 @@ export type Message = {
   from: string;
   to: string;
   body: string;
-  type?: "text" | "voice-note";
+  type?: "text" | "voice-note" | "file";
   audioUrl?: string;
   audioDurationMs?: number;
+  attachment?: {
+    name: string;
+    mimeType: string;
+    size: number;
+    dataUrl: string;
+  };
   roomId?: string | null;
   createdAt: string;
   read: boolean;
